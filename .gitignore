@@ -1,0 +1,16 @@
+outputs*/
+aug_images/
+log*/
+weights/
+nohup*.out
+__pycache__/
+pca_coeff/
+benchmark*/
+out*/
+cross*/
+abalation*/
+visual*/
+action*/
+out*/
+old*/
+attr*/

@@ -29,7 +29,8 @@
 **TL;DR: Intergrating a unique individual into the pre-trained diffusion model with:** 
 
 ✅ just <b>one</b> facial photograph &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-✅ in <b>4</b> minutes tuning &nbsp;&nbsp;&nbsp;&nbsp;  ✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;
+✅ in <b>4</b> minutes tuning &nbsp;&nbsp;&nbsp;&nbsp;  
+✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;
 ✅ Do facial edits for generated images using our mapper network </br>
 
 ![Fig1](./assets/teaser-fig-precisecontrol.png)

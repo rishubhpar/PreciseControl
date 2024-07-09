@@ -1,0 +1,179 @@
+model:
+  base_learning_rate: 5e-6
+  target: ldm.models.diffusion.ddpm.LatentDiffusion
+  params:
+    linear_start: 0.00085
+    linear_end: 0.012
+    num_timesteps_cond: 1
+    log_every_t: 200
+    timesteps: 1000
+    first_stage_key: image
+    cond_stage_key: caption
+    image_size: 64
+    channels: 4
+    cond_stage_trainable: true
+    conditioning_key: crossattn
+    monitor: val/loss_simple_ema
+    scale_factor: 0.18215
+    use_ema: false
+    embedding_reg_weight: 0.0
+    unfreeze_model: false
+    model_lr: 0.0
+    use_face_masking: false
+    use_faceid_loss: true
+    id_loss_weight: 1
+    lora_lr: 1e-3
+    use_lora_finetuning: true
+    lora_rank: 10
+    lora_names_list: None
+    personalization_config:
+      target: ldm.modules.embedding_manager.EmbeddingManagerId
+      params:
+        placeholder_strings:
+        - sks
+        - ks
+        - ata
+        - tre
+        - ry
+        - bop
+        - rn
+        - '&'
+        - '*'
+        - '`'
+        initializer_words:
+        - face
+        - face
+        - face
+        - face
+        - face
+        - face
+        - face
+        - face
+        - face
+        - face
+        max_ids: 20
+        num_embeds_per_token: 2
+        meta_mlp_depth: 4
+        loss_type: none
+        meta_inner_dim: 512
+        context_dim: 1024
+        meta_heads: 1
+        use_rm_mlp: false
+        test_mode: image
+        momentum: 0.99
+        save_fp16: false
+        use_aligned_faces: true
+        use_regularization: true
+        regularization_weight: 1e-7
+        use_norm_reg: false
+        use_hspace: false
+        use_stylegan_based_mapper: true
+        use_timestep_embedder: true
+        use_celeb_basis: false
+        use_basis_offset: false
+        shift_basis: false
+    unet_config:
+      target: ldm.modules.diffusionmodules.openaimodel.UNetModel
+      params:
+        use_fp16: false
+        image_size: 32
+        in_channels: 4
+        out_channels: 4
+        model_channels: 320
+        attention_resolutions:
+        - 4
+        - 2
+        - 1
+        num_res_blocks: 2
+        channel_mult:
+        - 1
+        - 2
+        - 4
+        - 4
+        num_head_channels: 64
+        use_spatial_transformer: true
+        use_linear_in_transformer: true
+        transformer_depth: 1
+        context_dim: 1024
+        use_checkpoint: true
+        legacy: false
+    first_stage_config:
+      target: ldm.models.autoencoder.AutoencoderKL
+      params:
+        embed_dim: 4
+        monitor: val/rec_loss
+        ddconfig:
+          double_z: true
+          z_channels: 4
+          resolution: 512
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult:
+          - 1
+          - 2
+          - 4
+          - 4
+          num_res_blocks: 2
+          attn_resolutions: []
+          dropout: 0.0
+        lossconfig:
+          target: torch.nn.Identity
+    cond_stage_config:
+      target: ldm.modules.encoders.modules.FrozenOpenCLIPEmbedder
+      params:
+        freeze: true
+        layer: penultimate
+        use_celeb: true
+        use_svd: true
+        rm_repeats: true
+        celeb_txt: ./infer_images/wiki_names_v2.txt
+        n_components: 512
+        use_sample_reduce: false
+        n_samples: 513
+        use_flatten: false
+        num_embeds_per_token: 2
+        use_clip_face_basis: false
+        face_basis_path: ./weights/clip_face_basis100k_pca_wo_mean.pkl
+data:
+  target: main.DataModuleFromConfig
+  params:
+    batch_size: 2
+    num_workers: 8
+    wrap: false
+    train:
+      target: ldm.data.face_id.FFhq_dataset
+      params:
+        root_dir: ./aug_images/bindi_lora_data/bindi7/
+        split: train
+        use_aug: false
+        image_size: 512
+        limit_dataset_size: -1
+        use_data_interpolation: false
+        percentage_of_synthetic_data: 0.1
+        lora_finetuning: true
+        multiple_samples: true
+    validation:
+      target: ldm.data.face_id.FFhq_dataset
+      params:
+        root_dir: ./aug_images/bindi_lora_data/bindi7/
+        split: val
+        image_size: 512
+        limit_dataset_size: 1
+        use_aug: false
+        lora_finetuning: true
+lightning:
+  modelcheckpoint:
+    params:
+      every_n_train_steps: 20
+  callbacks:
+    image_logger:
+      target: main.ImageLogger
+      params:
+        batch_frequency: 50
+        max_images: 8
+        increase_log_steps: false
+  trainer:
+    benchmark: true
+    max_steps: 50
+    accumulate_grad_batches: 8

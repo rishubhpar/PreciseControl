@@ -600,13 +600,13 @@ def main():
                                             one_grid = make_grid(one_grid, nrow=n_rows)
                                             # to image
                                             one_grid = 255. * rearrange(one_grid, 'c h w -> h w c').cpu().numpy()
-                                            # Image.fromarray(one_grid.astype(np.uint8)).save(
-                                            #     os.path.join(outpath, f'{grid_count:04}-{prompt_all[prompts_idx].replace(" ", "-")}_'
-                                            #                         f'{opt.img_suffix[:40]}.jpg'))
-                                            grid = 255. * grid[0].permute(0,2,3,1).cpu().numpy()
-                                            Image.fromarray(grid[sample_id].astype(np.uint8)).save(
+                                            Image.fromarray(one_grid.astype(np.uint8)).save(
                                                 os.path.join(outpath, f'{grid_count:04}-{prompt_all[prompts_idx].replace(" ", "-")}_'
-                                                                    f'{opt.img_suffix[:40]}-{1}.jpg'))
+                                                                    f'{opt.img_suffix[:40]}.jpg'))
+                                            # grid = 255. * grid[0].permute(0,2,3,1).cpu().numpy()
+                                            # Image.fromarray(grid[sample_id].astype(np.uint8)).save(
+                                            #     os.path.join(outpath, f'{grid_count:04}-{prompt_all[prompts_idx].replace(" ", "-")}_'
+                                            #                         f'{opt.img_suffix[:40]}-{1}.jpg'))
                                             grid_count += 1
 
                                     all_samples = list()

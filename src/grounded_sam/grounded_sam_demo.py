@@ -9,7 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 # Grounding DINO
 import sys
-sys.path.append('/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/src/grounded_sam/')
+sys.path.append('./src/grounded_sam/')
 import GroundingDINO.groundingdino.datasets.transforms as T
 from GroundingDINO.groundingdino.models import build_model
 from GroundingDINO.groundingdino.util import box_ops
@@ -28,10 +28,10 @@ import matplotlib.pyplot as plt
 
 
 def main(pil_img=None):
-    config_file = "/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/src/grounded_sam/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" # change the path of the model config file
-    grounded_checkpoint = "/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/src/grounded_sam/groundingdino_swint_ogc.pth" # change the path of the model
+    config_file = "./src/grounded_sam/GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" # change the path of the model config file
+    grounded_checkpoint = "./weights/groundingdino_swint_ogc.pth" # change the path of the model
     sam_version = "vit_b"
-    sam_checkpoint = "/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/weights/sam_vit_b_01ec64.pth"
+    sam_checkpoint = "./weights/sam_vit_b_01ec64.pth"
     sam_hq_checkpoint = None
     use_sam_hq = False
     image_path = "./snoop_bench.png"
@@ -240,7 +240,7 @@ if __name__ == "__main__":
         "--sam_version", type=str, default="vit_b", required=False, help="SAM ViT version: vit_b / vit_l / vit_h"
     )
     parser.add_argument(
-        "--sam_checkpoint", type=str, required=False, default="/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/weights/sam_vit_b_01ec64.pth", help="path to sam checkpoint file"
+        "--sam_checkpoint", type=str, required=False, default="./weights/sam_vit_b_01ec64.pth", help="path to sam checkpoint file"
     )
     parser.add_argument(
         "--sam_hq_checkpoint", type=str, default=None, help="path to sam-hq checkpoint file"
@@ -267,7 +267,7 @@ if __name__ == "__main__":
     # config_file = "GroundingDINO/groundingdino/config/GroundingDINO_SwinT_OGC.py" # change the path of the model config file
     # grounded_checkpoint = "./groundingdino_swint_ogc.pth" # change the path of the model
     # sam_version = "vit_b"
-    # sam_checkpoint = "/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/weights/sam_vit_b_01ec64.pth"
+    # sam_checkpoint = "./weights/sam_vit_b_01ec64.pth"
     # sam_hq_checkpoint = None
     # use_sam_hq = False
     # image_path = "./demo_img2.jpg"

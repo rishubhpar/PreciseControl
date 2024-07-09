@@ -1,5 +1,4 @@
 outputs*/
-aug_images/
 log*/
 weights/
 nohup*.out

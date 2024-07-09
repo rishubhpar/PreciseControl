@@ -1,0 +1,229 @@
+model:
+  base_learning_rate: 5.0e-05
+  target: ldm.models.diffusion.ddpm.LatentDiffusion
+  params:
+    linear_start: 0.00085
+    linear_end: 0.0120
+    num_timesteps_cond: 1
+    log_every_t: 200
+    timesteps: 1000
+    first_stage_key: image
+    cond_stage_key: caption
+    image_size: 64
+    channels: 4
+    cond_stage_trainable: true   # Note: different from the one we trained before
+    conditioning_key: crossattn
+    monitor: val/loss_simple_ema
+    scale_factor: 0.18215
+    use_ema: False
+    embedding_reg_weight: 0.0
+    unfreeze_model: False
+    model_lr: 0.0
+    use_face_masking: True
+    use_faceid_loss: False
+    id_loss_weight: 1
+    lora_lr: 1e-3
+    use_lora_finetuning: False
+    lora_rank: 10
+
+    personalization_config:
+      target: ldm.modules.embedding_manager.EmbeddingManagerId
+      params:
+        placeholder_strings: ['sks', 'ks', 'ata', 'tre', 'ry', 'bop', 'rn', '&', '*', '`']
+        initializer_words: ["face", "face", "face", "face", "face", "face", "face", "face", "face", "face"]
+        max_ids: 20  # joint learning #ids, consistent with data.train.num_ids
+        num_embeds_per_token: 2  # consistent with cond_stage_config
+        meta_mlp_depth: 4
+        loss_type: 'none'
+        meta_inner_dim: 512  # consistent with n_components
+        context_dim: 1024
+        meta_heads: 1
+        use_rm_mlp: False
+        # test_mode: 'coefficient'  # coefficient/embedding/image/all
+        test_mode: 'image'  # coefficient/embedding/image/all
+        momentum: 0.99
+        save_fp16: False
+        use_aligned_faces: True
+        use_regularization: True  # For domain regulariser simlar E4T encoder
+        regularization_weight: 1e-7
+        use_norm_reg: False         # For regularising output similar to Neti by using norm of domain
+        use_hspace: False
+        use_stylegan_based_mapper: True
+        use_timestep_embedder: True
+        use_celeb_basis: False
+        use_basis_offset: False
+        shift_basis: False
+        domain_name: "dress"
+
+    unet_config:
+      target: ldm.modules.diffusionmodules.openaimodel.UNetModel
+      params:
+        use_fp16: False
+        image_size: 32 # unused
+        in_channels: 4
+        out_channels: 4
+        model_channels: 320
+        attention_resolutions: [ 4, 2, 1 ]
+        num_res_blocks: 2
+        channel_mult: [ 1, 2, 4, 4 ]
+        # num_heads: 8
+        num_head_channels: 64
+        use_spatial_transformer: True
+        use_linear_in_transformer: True
+        transformer_depth: 1
+        context_dim: 1024
+        use_checkpoint: True
+        legacy: False
+
+    first_stage_config:
+      target: ldm.models.autoencoder.AutoencoderKL
+      params:
+        embed_dim: 4
+        monitor: val/rec_loss
+        ddconfig:
+          double_z: true
+          z_channels: 4
+          resolution: 512 # prev 512
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult:
+          - 1
+          - 2
+          - 4
+          - 4
+          num_res_blocks: 2
+          attn_resolutions: []
+          dropout: 0.0
+        lossconfig:
+          target: torch.nn.Identity
+
+    cond_stage_config:
+      target: ldm.modules.encoders.modules.FrozenOpenCLIPEmbedder
+      params:
+        freeze: True
+        layer: "penultimate"
+        use_celeb: True        # whether to use celeb basis
+        use_svd: True
+        rm_repeats: True
+        celeb_txt: "./infer_images/wiki_names_v2.txt"  # celebs, wiki_names_v1
+        n_components: 512  # consistent with meta_inner_dim, should be <= n_samples-1
+        use_sample_reduce: False
+        n_samples: 513
+        use_flatten: False
+        use_domain_regularization: False
+        domain_regularization_weight: 1e-6
+        num_embeds_per_token: 2  # consistent with personalization_config
+        use_clip_face_basis: False  # check the usage of correct path
+        face_basis_path: './weights/clip_face_basis100k_pca_wo_mean.pkl'
+
+# data:
+#   target: main.DataModuleFromConfig
+#   params:
+#     batch_size: 2
+#     num_workers: 8
+#     wrap: false
+#     train:
+#       target: ldm.data.face_id.FaceIdDatasetOneShot
+#       params:
+#         pickle_path: "./aug_images/stylegan3/edited/ffhq.pickle"  # /Your/Path/To/Images/ffhq.pickle
+#         split: train
+#         use_aug: False
+#         num_ids: 10
+#         specific_ids: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+#         images_per_id: 1
+#         repeats: 1000
+#         reg_ids: 1000
+#         reg_repeats: 0
+#         diff_cnt: 0
+#     validation:
+#       target: ldm.data.face_id.FaceIdDatasetOneShot
+#       params:
+#         pickle_path: "./aug_images/stylegan3/edited/ffhq.pickle"  # /Your/Path/To/Images/ffhq.pickle
+#         split: val
+#         num_ids: 10
+#         images_per_id: 1
+#         repeats: 1
+#         reg_repeats: 0
+#         diff_cnt: 0
+
+
+################################################################
+
+# data:
+#   target: main.DataModuleFromConfig
+#   params:
+#     batch_size: 2
+#     num_workers: 8
+#     wrap: false
+#     train:
+#       target: ldm.data.face_id.FFhq_dataset
+#       params:
+#         root_dir: "../../datasets/ffhq/"  # /Your/Path/To/Images/ffhq.pickle
+#         # ffhq_latents_path: "../../datasets/ffhq/ffhq_latents.pt"
+#         split: train
+#         use_aug: True
+#         image_size: 512
+#         limit_dataset_size: 70000
+#         use_data_interpolation: False
+#         percentage_of_synthetic_data: 0.1
+#         use_two_ids: False
+
+#     validation:
+#       target: ldm.data.face_id.FFhq_dataset
+#       params:
+#         root_dir: "../../datasets/ffhq/"  # /Your/Path/To/Images/ffhq.pickle"
+#         # ffhq_latents_path: "../../datasets/ffhq/ffhq_latents.pt"
+#         split: val
+#         image_size: 512
+#         limit_dataset_size: -1
+#         use_aug: True
+
+data:
+  target: main.DataModuleFromConfig
+  params:
+    batch_size: 2
+    num_workers: 8
+    wrap: false
+    train:
+      target: ldm.data.face_id.Stylegan_human_dataset
+      params:
+        root_dir: "../../datasets/stylegan_human/train/"  # /Your/Path/To/Images/ffhq.pickle
+        # ffhq_latents_path: "../../datasets/ffhq/ffhq_latents.pt"
+        split: train
+        use_aug: False
+        image_size: 512
+        limit_dataset_size: 40000
+        use_data_interpolation: False
+        percentage_of_synthetic_data: 0.1
+        use_two_ids: False
+
+    validation:
+      target: ldm.data.face_id.Stylegan_human_dataset
+      params:
+        root_dir: "../../datasets/stylegan_human/train/"  # /Your/Path/To/Images/ffhq.pickle"
+        # ffhq_latents_path: "../../datasets/ffhq/ffhq_latents.pt"
+        split: val
+        image_size: 512
+        limit_dataset_size: -1
+        use_aug: False
+
+##################################################################
+
+
+lightning:
+  modelcheckpoint:
+    params:
+      every_n_train_steps: 20000
+  callbacks:
+    image_logger:
+      target: main.ImageLogger
+      params:
+        batch_frequency: 10000
+        max_images: 8
+        increase_log_steps: False
+
+  trainer:
+    benchmark: True
+    max_steps: 150000
+    # accumulate_grad_batches: 2

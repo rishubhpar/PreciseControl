@@ -227,6 +227,7 @@ class FrozenOpenCLIPEmbedder(AbstractEncoder):
             self.domain_loss = 0
             self.domain_regularization_weight = domain_regularization_weight
     
+    #TODO: useless, not used anywhere remove it
     @torch.no_grad()
     def _get_clip_face_basis_embeddings(self, embeddings_path):
 

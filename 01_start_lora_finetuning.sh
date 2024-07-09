@@ -3,9 +3,9 @@
 export PYTHONPATH="${PWD}"
 
 SD_PATH=$1  # /Your/Path/To/sd-v1-4-full-ema.ckpt
-LOG_DIR_NAME=${2:-"celebbasis"}
-EMBEDDING_PATH=${3:-/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/logs/wt_interpolation_sd2_idloss_finetune/checkpoints/embeddings_gs-149999.pt}
-CONFIG_FILE=${4:-configs/stable-diffusion/aigc_id_for_lora_all.yaml}
+LOG_DIR_NAME=${2:-"id_name"}
+EMBEDDING_PATH=${3:-logs/wt_mapper_70k_sd2_idloss/checkpoints/embeddings_gs-139999.pt}
+CONFIG_FILE=${4:-configs/stable-diffusion/aigc_id_for_lora.yaml}
 
 
 # Usage Example:

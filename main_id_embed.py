@@ -136,7 +136,7 @@ def get_parser(**parser_kwargs):
         "-l",
         "--logdir",
         type=str,
-        default="logs_makeup",
+        default="logs",
         help="directory for logging dat shit",
     )
     parser.add_argument(

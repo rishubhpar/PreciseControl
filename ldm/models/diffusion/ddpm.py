@@ -39,7 +39,7 @@ import argparse
 import cv2
 import matplotlib.pyplot as plt
 import scipy
-from face_detectors import Ultralight320Detector
+# from face_detectors import Ultralight320Detector
 
 __conditioning_keys__ = {'concat': 'c_concat',
                          'crossattn': 'c_crossattn',

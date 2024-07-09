@@ -61,25 +61,34 @@ To set up our environment, please run:
 ```shell
 conda env create -f environment.yml
 conda activate sd
+python -m pip install git+https://github.com/cloneofsimo/lora.git
 ```
 
 And follow [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for setting up mask prediction in two person generation and download SAM weights in weights folder.
 The pre-trained weights used in this repo include [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1) and 
 [CosFace R100 trained on Glint360K](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo).
+And download FFHQ e4e weights and IR-SE50 weights from [encoder4editing](https://github.com/omertov/encoder4editing?tab=readme-ov-file). 
 You may copy these pre-trained weights to `./weights`, and the directory tree will be like:
 
 ```shell
-CelebBasis/
+PreciseControl/
   |-- weights/
       |--glint360k_cosface_r100_fp16_0.1/
           |-- backbone.pth (249MB)
-      |--sv2-1_768-ema-pruned.ckpt (~7.0GB)
+      |--encoder/
+          |-- e4e_ffhq_encode.pt(~1.1GB)
+          |-- shape_predictor_68_face_landmarks.dat
+      |-- clip_face_basis100k_pca_wo_mean.pkl (not used)
+      |-- v2-1_768-ema-pruned.ckpt (~7.0GB)
+      |-- sam_vit_b_01ec64.pth
+      |-- groundingdino_swint_ogc.pth
+      |-- model_ir_se50.pt
 ```
 
 We use [PIPNet](https://github.com/jhb86253817/PIPNet) to align and crop the face.
 The PIPNet pre-trained weights can be downloaded from [this link](https://github.com/ygtxr1997/CelebBasis/issues/2#issuecomment-1607775140) (provided by @justindujardin)
 or our [Baidu Yun Drive](https://pan.baidu.com/s/1Cgw0i723SyeLo5lbJu-b0Q) with extracting code: `ygss`.
-Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `CelebBasis/evaluation/face_align/PIPNet/weights/`.
+Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `PreciseControl/evaluation/face_align/PIPNet/weights/`.
 And finally download our mapper network weights folder [wt_mapper](https://drive.google.com/drive/folders/1ScrLSa-S1Epc8fO_FBkMJvFae9EO226b?usp=sharing) and put it under logs directory 
 
 ### Usage
@@ -129,7 +138,7 @@ data:
     validation:
       target: ldm.data.face_id.FFhq_dataset
       params:
-        pickle_path: /Your/Path/To/Images/ffhq.pickle  # consistent with train.params.pickle_path
+        root_dir: "./aug_images/lora_finetune_comparision_data/id_name/"
 ```
 
 **Important Training Settings**
@@ -156,7 +165,7 @@ Reduce the accumulate grad batches as per the GPU availablity, but for lower val
 
 **Training**
 ```shell
-bash ./01_start_lora_finetuning.sh ./weights/v2-1_768-ema-pruned.ckpt
+bash ./01_start_lora_finetuning.sh ./weights/v2-1_768-ema-pruned.ckpt id_name
 ```
 
 Consequently, a project folder named `id_name` is generated under `./logs`. 

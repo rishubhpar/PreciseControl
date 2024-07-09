@@ -166,6 +166,7 @@ Reduce the accumulate grad batches as per the GPU availablity, but for lower val
 
 **Training**
 ```shell
+# bash ./01_start_lora_finetuning.sh model weights folder_name_to_save_output
 bash ./01_start_lora_finetuning.sh ./weights/v2-1_768-ema-pruned.ckpt id_name
 ```
 
@@ -174,7 +175,7 @@ Consequently, a project folder named `id_name` is generated under `./logs`.
 #### 2. Generation
 
 Edit the prompt file `./infer_images/example_prompt_1.txt`, where `sks` denotes the first identity. `image_name.jpg` should be present inside 
-`./aug_images/comparision/edited/` or else manually you have to change the root dir in code.
+`./aug_images/comparision/edited/` or else manually you have to change the root dir in code. To get better identity increase lora scale parameter, but this might reduce text editability.
 
 <!-- Optionally, in `./02_start_test.sh`, you may modify the following var as you need:
 ```shell
@@ -185,7 +186,8 @@ eval_id2_list=(1)  # the ID index of the 2nd person, e.g. (0 1 2 3 4)
 
 **Testing**
 ```shell
-bash ./02_start_test.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg 
+# bash ./02_start_test.sh sd_weights_path text_prompt_path logs_folder_name "0 0 0 0" (whether to add lora weights) batch_size lora_it lora_scale image_name
+bash ./02_start_test.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 4 49 0.2 image_name.jpg 
 ```
 
 The generated images are under `./outputs/id_name/`.
@@ -197,6 +199,7 @@ Edit the prompt file `./infer_images/example_prompt.txt`, where `sks` denotes th
 
 **Testing attr edit**
 ```shell
+# bash ./02_start_test_pmm.sh sd_weights_path text_prompt_path logs_folder_name "0 0 0 0" (whether to add lora weights) batch_size(use 1) lora_it lora_scale image_name attr_name
 bash ./02_start_test_pmm.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg attr_name
 ```
 This will generate a gif and list of images with different edit strength.

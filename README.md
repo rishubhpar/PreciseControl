@@ -6,7 +6,7 @@
 
 <div>
 <span class="author-block">
-<a href="https://scholar.google.com/citations?user=RaRoJFYAAAAJ&hl=en" target="_blank">Rishubh Parihar</a><sup>1</sup></span>,
+<a href="https://scholar.google.com/citations?user=RaRoJFYAAAAJ&hl=en" target="_blank">Rishubh Parihar</a><sup>1,*</sup></span>,
 <span class="author-block">
   <a href="https://www.linkedin.com/in/sachidanand-v-s-449573201/?originalSubdomain=in" target="_blank">Sachidanand VS</a><sup>1</sup></span>,
 <span class="author-block"><a href="https://scholar.google.com/citations?user=Klwb85AAAAAJ&hl=en" target="_blank">Sabarishwaran Mani</a><sup>1,2</sup></span>, <br>
@@ -14,7 +14,7 @@
     <a href="https://tejank10.github.io/" target="_blank">Tejan Karmali</a><sup>1</sup>,
   </span>
   <span class="author-block">
-    <a href="https://scholar.google.com/citations?user=cVg7HrEAAAAJ&hl=en" target="_blank">Venkatesh Babu</a><sup>1,*</sup>
+    <a href="https://scholar.google.com/citations?user=cVg7HrEAAAAJ&hl=en" target="_blank">Venkatesh Babu</a><sup>1</sup>
   </span> (* Corresponding Authors)
   </div>
 
@@ -59,7 +59,7 @@ It also uses [Prompt-Mixing](https://github.com/orpatashnik/local-prompt-mixing)
 To set up our environment, please run:
 
 ```shell
-conda env create -f environment.yml
+conda env create -f environment.yaml
 conda activate sd
 python -m pip install git+https://github.com/cloneofsimo/lora.git
 ```

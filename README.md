@@ -6,41 +6,31 @@
 
 <div>
 <span class="author-block">
-<a href="https://scholar.google.com/citations?user=RaRoJFYAAAAJ&hl=en" target="_blank">Rishubh Parihar</a><sup>1,2</sup></span>,
+<a href="https://scholar.google.com/citations?user=RaRoJFYAAAAJ&hl=en" target="_blank">Rishubh Parihar</a><sup>1</sup></span>,
 <span class="author-block">
-  <a href="http://vinthony.github.io/" target="_blank">Xiaodong Cun</a><sup>2</sup></span>,
-<span class="author-block">
-    <a href="https://yzhang2016.github.io" target="_blank">Yong Zhang</a><sup>2</sup>,
+  <a href="https://www.linkedin.com/in/sachidanand-v-s-449573201/?originalSubdomain=in" target="_blank">Sachidanand VS</a><sup>1</sup></span>,
+<span class="author-block"><a href="https://scholar.google.com/citations?user=Klwb85AAAAAJ&hl=en" target="_blank">Sabarishwaran Mani</a><sup>1,2</sup></span>, <br>
+  <span class="author-block">
+    <a href="https://tejank10.github.io/" target="_blank">Tejan Karmali</a><sup>1</sup>,
   </span>
   <span class="author-block">
-    <a href="https://scholar.google.com/citations?user=ym_t6QYAAAAJ&hl=zh-CN&oi=sra" target="_blank">Maomao Li</a><sup>2,*</sup>,
-  </span>
-<span class="author-block"><a href="https://chenyangqiqi.github.io/" target="_blank">Chenyang Qi</a><sup>3,2</sup></span>, <br>
-  <span class="author-block">
-    <a href="https://xinntao.github.io/" target="_blank">Xintao Wang</a><sup>2</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://scholar.google.com/citations?hl=zh-CN&user=4oXBp9UAAAAJ" target="_blank">Ying Shan</a><sup>2</sup>,
-  </span>
-  <span class="author-block">
-    <a href="https://scholar.google.com/citations?user=CCUQi50AAAAJ" target="_blank">Huicheng Zheng</a><sup>1,*</sup>
+    <a href="https://scholar.google.com/citations?user=cVg7HrEAAAAJ&hl=en" target="_blank">Venkatesh Babu</a><sup>1,*</sup>
   </span> (* Corresponding Authors)
   </div>
 
   
 <div class="is-size-5 publication-authors">
                   <span class="author-block">
-                  <sup>1</sup> Sun Yat-sen University &nbsp;&nbsp;&nbsp;
-                  <sup>2</sup> Tencent AI Lab &nbsp;&nbsp;&nbsp;
-                  <sup>3</sup> HKUST </span>
+                  <sup>1</sup> VAL IISc &nbsp;&nbsp;&nbsp;
+                  <sup>2</sup> IIT KGB &nbsp;&nbsp;&nbsp;
                 </div>
 <br>
 
 **TL;DR: Intergrating a unique individual into the pre-trained diffusion model with:** 
 
 ✅ just <b>one</b> facial photograph &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-✅ in <b>3</b> minutes tunning &nbsp;&nbsp;&nbsp;&nbsp;  ✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;
-✅ Do facial edits for generated images using our mapper neteork </br>
+✅ in <b>4</b> minutes tuning &nbsp;&nbsp;&nbsp;&nbsp;  ✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;
+✅ Do facial edits for generated images using our mapper network </br>
 
 ![Fig1](./assets/teaser-fig-precisecontrol.png)
 
@@ -69,7 +59,7 @@ It also uses [Prompt-Mixing](https://github.com/orpatashnik/local-prompt-mixing)
 To set up our environment, please run:
 
 ```shell
-conda env create -f environment.yaml
+conda env create -f environment.yml
 conda activate sd
 ```
 
@@ -111,7 +101,12 @@ For example, we provide some cropped faces in `./aug_images/comparision/edited`
 #### 1. Personalization
 
 The training config file is `./configs/stable-diffusion/aigc_id_for_lora.yaml`.
-The most important settings are listed as follows.
+The most important settings are listed as follows. The bengio file structure should be 
+```shell
+bengio
+  |-- 0000/
+      |-- img.jpg
+```
 
 **Important Data Settings**
 ```yaml
@@ -167,7 +162,7 @@ Consequently, a project folder named `id_name` is generated under `./logs`.
 
 #### 2. Generation
 
-Edit the prompt file `./infer_images/example_prompt.txt`, where `sks` denotes the first identity. `image_name.jpg` should be present inside 
+Edit the prompt file `./infer_images/example_prompt_1.txt`, where `sks` denotes the first identity. `image_name.jpg` should be present inside 
 `./aug_images/comparision/edited/` or else manually you have to change the root dir in code.
 
 <!-- Optionally, in `./02_start_test.sh`, you may modify the following var as you need:

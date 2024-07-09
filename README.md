@@ -81,9 +81,10 @@ PreciseControl/
           |-- shape_predictor_68_face_landmarks.dat
       |-- clip_face_basis100k_pca_wo_mean.pkl (not used)
       |-- v2-1_768-ema-pruned.ckpt (~7.0GB)
-      |-- sam_vit_b_01ec64.pth
-      |-- groundingdino_swint_ogc.pth
       |-- model_ir_se50.pt
+      |-- sam_vit_b_01ec64.pth (for multi person)
+      |-- groundingdino_swint_ogc.pth (for multi person)
+      
 ```
 
 We use [PIPNet](https://github.com/jhb86253817/PIPNet) to align and crop the face.

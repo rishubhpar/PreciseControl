@@ -55,7 +55,7 @@ More details can be found in our [project page](https://celeb-basis.github.io).
 ### Setup
 
 Our code mainly bases on [CelebBasis](https://github.com/ygtxr1997/CelebBasis).
-It also uses [Prompt-Mixing](https://github.com/orpatashnik/local-prompt-mixing) for background preservation, [Lora](https://github.com/cloneofsimo/lora) for lora finetuning and [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for mask generation.
+It also uses [Prompt-Mixing](https://github.com/orpatashnik/local-prompt-mixing), [Lora](https://github.com/cloneofsimo/lora) for lora finetuning and [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for mask generation.
 To set up our environment, please run:
 
 ```shell
@@ -63,7 +63,7 @@ conda env create -f environment.yml
 conda activate sd
 ```
 
-And follow [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for setting up mask prediction in two person generation.
+And follow [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for setting up mask prediction in two person generation and download SAM weights in weights folder.
 The pre-trained weights used in this repo include [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1) and 
 [CosFace R100 trained on Glint360K](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo).
 You may copy these pre-trained weights to `./weights`, and the directory tree will be like:
@@ -80,6 +80,7 @@ We use [PIPNet](https://github.com/jhb86253817/PIPNet) to align and crop the fac
 The PIPNet pre-trained weights can be downloaded from [this link](https://github.com/ygtxr1997/CelebBasis/issues/2#issuecomment-1607775140) (provided by @justindujardin)
 or our [Baidu Yun Drive](https://pan.baidu.com/s/1Cgw0i723SyeLo5lbJu-b0Q) with extracting code: `ygss`.
 Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `CelebBasis/evaluation/face_align/PIPNet/weights/`.
+And finally download our mapper network weights folder [wt_mapper](https://drive.google.com/drive/folders/1ScrLSa-S1Epc8fO_FBkMJvFae9EO226b?usp=sharing) and put it under logs directory 
 
 ### Usage
 
@@ -101,9 +102,9 @@ For example, we provide some cropped faces in `./aug_images/comparision/edited`
 #### 1. Personalization
 
 The training config file is `./configs/stable-diffusion/aigc_id_for_lora.yaml`.
-The most important settings are listed as follows. The bengio file structure should be 
+The most important settings are listed as follows. The id_name folder structure should be 
 ```shell
-bengio
+id_name
   |-- 0000/
       |-- img.jpg
 ```
@@ -116,7 +117,7 @@ data:
     train:
       target: ldm.data.face_id.FFhq_dataset 
       params:
-        root_dir: "./aug_images/lora_finetune_comparision_data/bengio/"
+        root_dir: "./aug_images/lora_finetune_comparision_data/id_name/"
         split: train
         use_aug: False
         image_size: 512
@@ -174,7 +175,7 @@ eval_id2_list=(1)  # the ID index of the 2nd person, e.g. (0 1 2 3 4)
 
 **Testing**
 ```shell
-bash ./02_start_test.sh "./weights/sd-v1-4-full-ema.ckpt" "./infer_images/example_prompt.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg 
+bash ./02_start_test.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg 
 ```
 
 The generated images are under `./outputs/id_name/`.
@@ -186,7 +187,7 @@ Edit the prompt file `./infer_images/example_prompt.txt`, where `sks` denotes th
 
 **Testing attr edit**
 ```shell
-bash ./02_start_test_pmm.sh "./weights/sd-v1-4-full-ema.ckpt" "./infer_images/example_prompt.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg attr_name
+bash ./02_start_test_pmm.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg attr_name
 ```
 This will generate a gif and list of images with different edit strength.
 

@@ -230,37 +230,7 @@ class FrozenOpenCLIPEmbedder(AbstractEncoder):
     #TODO: useless, not used anywhere remove it
     @torch.no_grad()
     def _get_clip_face_basis_embeddings(self, embeddings_path):
-        pass
-        # import pickle
-        # import numpy as np
-        # with open(embeddings_path, 'rb') as f:
-        #     clip_face_basis = pickle.load(f)
-        #     print("Loaded clip face basis from {}".format(embeddings_path))
-        # # check if its numpy array or torch tensor
-        # if(type(clip_face_basis['clip_token1']['components']) == np.ndarray):
-        #     clip_face_token_embeddings1 = torch.from_numpy(clip_face_basis['clip_token1']['components']).float().to(self.device)
-        #     # print("clip_face_embeddings 0:", clip_face_token_embeddings1[0])
-        #     # print("clip_face_embeddings 1:", clip_face_token_embeddings1[1])
-        #     clip_mean_feat_token1 = torch.from_numpy(clip_face_basis['clip_token1']['clip_feat_mean']).float().to(self.device)
-        #     # clip_mean_feat_token1 = torch.zeros_like(clip_mean_feat_token1)
-        #     clip_face_token1_embeddings = torch.cat([clip_mean_feat_token1, clip_face_token_embeddings1], dim=0)
-
-        #     clip_face_token_embeddings2 = torch.from_numpy(clip_face_basis["clip_token2"]['components']).float().to(self.device)
-        #     clip_mean_feat_token2 = torch.from_numpy(clip_face_basis["clip_token2"]['clip_feat_mean']).float().to(self.device)
-        #     # clip_mean_feat_token2 = torch.zeros_like(clip_mean_feat_token2)
-        #     clip_face_token2_embeddings = torch.cat([clip_mean_feat_token2.unsqueeze(0), clip_face_token_embeddings2], dim=0)
-        # else:
-        #     clip_face_token_embeddings1 = clip_face_basis['clip_token1']['components'].float().to(self.device)
-        #     clip_mean_feat_token1 = torch.from_numpy(clip_face_basis['clip_token1']['clip_feat_mean']).float().to(self.device)
-        #     clip_face_token1_embeddings = torch.cat([clip_mean_feat_token1, clip_face_token_embeddings1], dim=0)
-
-        #     clip_face_token_embeddings2 = clip_face_basis["clip_token2"]['components'].float().to(self.device)
-        #     clip_mean_feat_token2 = torch.from_numpy(clip_face_basis["clip_token2"]['clip_feat_mean']).float().to(self.device)
-        #     clip_face_token2_embeddings = torch.cat([clip_mean_feat_token2.unsqueeze(0), clip_face_token_embeddings2], dim=0)
-
-        # self.celeb_embeddings = torch.cat([clip_face_token1_embeddings.unsqueeze(0), clip_face_token2_embeddings.unsqueeze(0)], dim=0)
-        self.celeb_embeddings = []
-        print("using clip face basis instead of celeb basis")
+        self.celeb_embeddings = torch.Tensor([0,0]) # just a placeholder not used anywhere
 
     def freeze(self):
         self.model = self.model.eval()

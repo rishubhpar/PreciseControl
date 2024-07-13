@@ -430,17 +430,7 @@ class MetaIdNet(nn.Module):
         if not self.use_rm_mlp:
             with torch.no_grad():
                 img = img.permute(0, 3, 1, 2)  # to (N,C,H,W)
-                # M = self.trans_matrix.repeat(img.size()[0], 1, 1)  # to (B,2,3)
-                # grid = F.affine_grid(M, size=img.size(), align_corners=True)  # 得到grid 用于grid sample
-                # img = F.grid_sample(img, grid, align_corners=True, mode="bilinear", padding_mode="zeros")  # warp affine
 
-                # img = F.interpolate(img, size=112, mode="bilinear", align_corners=True)
-
-                # self.id_model.eval()
-                # v = self.id_model(img)
-                # v = F.normalize(v, dim=-1, p=2)
-
-                # # w_latent generation is switched to dataloader
                 if(w_latents is None and self.domain_name=="face"):
                     # print("w_latents is None")
                     if(aligned_faces is not None):
@@ -494,28 +484,6 @@ class MetaIdNet(nn.Module):
                 if(self.shift_basis is not None):
                     x = x * torch.exp(self.scale_factor.to(x.device)) + self.shift_factor.to(x.device)
 
-
-
-        # else:  # for ablation study
-        #     x = self.coef[id_idx]
-
-                # # plotting pca coefficients
-                # pca_coeff = x.detach().cpu().numpy()[0].reshape(-1)
-                # import os
-                # import numpy as np
-                # if(os.path.exists("./pca_coeff") == False):
-                #     os.mkdir("./pca_coeff")
-                # import matplotlib.pyplot as plt
-                # # plot a figure with 2 subplot first having 512 and second having 512 dimensions
-                # plt.figure(figsize=(10,10))
-                # plt.subplot(2, 1, 1)
-                # plt.bar(np.arange(len(pca_coeff[:512])), pca_coeff[:512])
-                # # plt.ylim(-0.1, 0.2)
-                # plt.subplot(2, 1, 2)
-                # plt.bar(np.arange(len(pca_coeff[512:])), pca_coeff[512:])
-                # # plt.ylim(-0.1, 0.2)
-                # plt.savefig(f"./pca_coeff/pca_coeff_{t.cpu().numpy()[0]}.png")
-                # plt.close()
 
         if celebs_embeds is not None and self.use_celeb_basis:
             ''' 3dmm/pca-based svd '''

@@ -6,16 +6,16 @@
 
 <div>
 <span class="author-block">
-<a href="https://scholar.google.com/citations?user=RaRoJFYAAAAJ&hl=en" target="_blank">Rishubh Parihar</a><sup>1,*</sup></span>,
+<a href="https://rishubhpar.github.io/" target="_blank">Rishubh Parihar</a><sup>1,*</sup></span>,
 <span class="author-block">
-  <a href="https://www.linkedin.com/in/sachidanand-v-s-449573201/?originalSubdomain=in" target="_blank">Sachidanand VS</a><sup>1</sup></span>,
+  <a href="https://www.linkedin.com/in/sachidanand-v-s-449573201/?originalSubdomain=in" target="_blank">Sachidanand VS</a><sup>1,*</sup></span>,
 <span class="author-block"><a href="https://scholar.google.com/citations?user=Klwb85AAAAAJ&hl=en" target="_blank">Sabarishwaran Mani</a><sup>1,2</sup></span>, <br>
   <span class="author-block">
-    <a href="https://tejank10.github.io/" target="_blank">Tejan Karmali</a><sup>1</sup>,
+    <a href="https://tejank10.github.io/" target="_blank">Tejan Karmali</a><sup>3</sup>,
   </span>
   <span class="author-block">
     <a href="https://scholar.google.com/citations?user=cVg7HrEAAAAJ&hl=en" target="_blank">Venkatesh Babu</a><sup>1</sup>
-  </span> (* Corresponding Authors)
+  </span> (*)
   </div>
 
   
@@ -23,6 +23,7 @@
                   <span class="author-block">
                   <sup>1</sup> VAL IISc &nbsp;&nbsp;&nbsp;
                   <sup>2</sup> IIT Kharagpur &nbsp;&nbsp;&nbsp;
+                  <sup>3</sup> Avataar.ai &nbsp;&nbsp;&nbsp;
                 </div>
 <br>
 
@@ -133,7 +134,7 @@ data:
     train:
       target: ldm.data.face_id.FFhq_dataset 
       params:
-        root_dir: "./aug_images/lora_finetune_comparision_data/id_name/"
+        root_dir: "absoulute path for the id_name folder" e.g. /data/.../id_name
         split: train
         use_aug: False
         image_size: 512
@@ -145,7 +146,7 @@ data:
     validation:
       target: ldm.data.face_id.FFhq_dataset
       params:
-        root_dir: "./aug_images/lora_finetune_comparision_data/id_name/"
+        root_dir: "absoulute path for the id_name folder" e.g. /data/.../id_name 
 ```
 
 **Important Training Settings**
@@ -173,7 +174,7 @@ Reduce the accumulate grad batches as per the GPU availablity, but for lower val
 **Training**
 ```shell
 # bash ./01_start_lora_finetuning.sh --model weights --folder_name_to_save_output
-bash ./01_start_lora_finetuning.sh ./weights/v2-1_512-ema-pruned.ckpt.ckpt id_name
+bash ./01_start_lora_finetuning.sh "./weights/v2-1_512-ema-pruned.ckpt" "id_name"
 ```
 
 Consequently, a project folder named `id_name` is generated under `./logs`. 

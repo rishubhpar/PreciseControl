@@ -28,10 +28,10 @@
 
 **TL;DR: Intergrating a unique individual into the pre-trained diffusion model with:** 
 
-✅ just <b>one</b> facial photograph &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
-✅ in <b>4</b> minutes tuning &nbsp;&nbsp;&nbsp;&nbsp;  
-✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;  
-✅ Do facial edits for generated images using our mapper network </br>
+✅ Single image personalization in a few minutes
+✅ Fine-grained attribute control with background preservation 
+✅ Generate and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;  
+✅ Realistic composition of two faces with high quality identity preservation and selective attribute control </br>
 
 ![Fig1](./assets/teaser-fig-precisecontrol.png)
 

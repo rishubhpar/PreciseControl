@@ -70,12 +70,13 @@ python -m pip install git+https://github.com/cloneofsimo/lora.git
 - [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1)   
 - [CosFace R100](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo) for face computing Identity Loss
 - [Encoder4Editing (E4E)](https://github.com/omertov/encoder4editing?tab=readme-ov-file).
+  
 Copy the pretrained weights to './weights' folder, the directory structure is shown below: 
 
 <!-- Old version commented out 
 The pre-trained weights used in this repo include [Stable Diffusion 2.1] and 
 [CosFace R100 trained on Glint360K]. 
-And download FFHQ e4e weights and IR-SE50 weights from [encoder4editing](https://github.com/omertov/encoder4editing?tab=readme-ov-file). 
+And download FFHQ e4e weights and IR-SE50 weights from [encoder4editing](https://github.com/omertov/encoder4editing?tab=readme-ov-file).
 You may copy these pre-trained weights to `./weights`, and the directory tree will be like:
  -->
 
@@ -95,11 +96,10 @@ PreciseControl/
       
 ```
 
-We use [PIPNet](https://github.com/jhb86253817/PIPNet) to align and crop the face.
-The PIPNet pre-trained weights can be downloaded from [this link](https://github.com/ygtxr1997/CelebBasis/issues/2#issuecomment-1607775140) (provided by @justindujardin)
-or our [Baidu Yun Drive](https://pan.baidu.com/s/1Cgw0i723SyeLo5lbJu-b0Q) with extracting code: `ygss`.
-Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `PreciseControl/evaluation/face_align/PIPNet/weights/`.
-And finally download our mapper network weights folder [wt_mapper](https://drive.google.com/drive/folders/1ScrLSa-S1Epc8fO_FBkMJvFae9EO226b?usp=sharing) and put it under logs directory 
+Additional modules 
+- [PIPNet](https://github.com/jhb86253817/PIPNet) for face preprocessing (align and crop). PIPNet weights can be downloaded from [this link](https://github.com/ygtxr1997/CelebBasis/issues/2#issuecomment-1607775140) (provided by @justindujardin)
+or our [Baidu Yun Drive](https://pan.baidu.com/s/1Cgw0i723SyeLo5lbJu-b0Q) with extracting code: `ygss`. Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `PreciseControl/evaluation/face_align/PIPNet/weights/`. 
+- Mapper weights [wt_mapper](https://drive.google.com/drive/folders/1ScrLSa-S1Epc8fO_FBkMJvFae9EO226b?usp=sharing) and copy it under logs directory 
 
 ### Usage
 

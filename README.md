@@ -26,10 +26,10 @@
                 </div>
 <br>
 
-**TL;DR: Intergrating a unique individual into the pre-trained diffusion model with:** 
+**TL;DR: Embedding a unique individual into the pre-trained diffusion model with:**  
 
-✅ Single image personalization in a few minutes
-✅ Fine-grained attribute control with background preservation 
+✅ Single image personalization in a few minutes  
+✅ Fine-grained attribute control with background preservation  
 ✅ Generate and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;  
 ✅ Realistic composition of two faces with high quality identity preservation and selective attribute control </br>
 

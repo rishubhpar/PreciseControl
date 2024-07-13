@@ -6,12 +6,12 @@
 
 <div>
 <span class="author-block">
-<a href="https://scholar.google.com/citations?user=RaRoJFYAAAAJ&hl=en" target="_blank">Rishubh Parihar</a><sup>1,*</sup></span>,
+<a href="https://rishubhpar.github.io/" target="_blank">Rishubh Parihar</a><sup>1,*</sup></span>,
 <span class="author-block">
   <a href="https://www.linkedin.com/in/sachidanand-v-s-449573201/?originalSubdomain=in" target="_blank">Sachidanand VS</a><sup>1,*</sup></span>,
 <span class="author-block"><a href="https://scholar.google.com/citations?user=Klwb85AAAAAJ&hl=en" target="_blank">Sabarishwaran Mani</a><sup>1,2</sup></span>, <br>
   <span class="author-block">
-    <a href="https://tejank10.github.io/" target="_blank">Tejan Karmali</a><sup>1</sup>,
+    <a href="https://tejank10.github.io/" target="_blank">Tejan Karmali</a><sup>3</sup>,
   </span>
   <span class="author-block">
     <a href="https://scholar.google.com/citations?user=cVg7HrEAAAAJ&hl=en" target="_blank">Venkatesh Babu</a><sup>1</sup>
@@ -23,6 +23,7 @@
                   <span class="author-block">
                   <sup>1</sup> VAL IISc &nbsp;&nbsp;&nbsp;
                   <sup>2</sup> IIT Kharagpur &nbsp;&nbsp;&nbsp;
+                  <sup>3</sup> Avataar.ai &nbsp;&nbsp;&nbsp;
                 </div>
 <br>
 

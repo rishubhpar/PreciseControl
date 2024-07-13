@@ -88,7 +88,6 @@ PreciseControl/
       |--encoder/
           |-- e4e_ffhq_encode.pt(~1.1GB)
           |-- shape_predictor_68_face_landmarks.dat
-      |-- clip_face_basis100k_pca_wo_mean.pkl (not used)
       |-- v2-1_512-ema-pruned.ckpt (~5.0GB)
       |-- model_ir_se50.pt
       |-- sam_vit_b_01ec64.pth (for multi person)

@@ -427,7 +427,7 @@ def main():
             if(two_ids):
                 multi_faces_list = [pil_to_4d(id1)]
                 for i in range(len(multi_face)):
-                    id2 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/{}".format("comparision_new", multi_face[i])).convert("RGB")
+                    id2 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/{}".format("comparision", multi_face[i])).convert("RGB")
                     multi_faces_list.append(pil_to_4d(id2))
                 # id2 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/{}".format("comp", "1.jpg")).convert("RGB")
                 # face2 = pil_to_4d(id2)

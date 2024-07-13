@@ -520,7 +520,7 @@ def main():
         faces = pil_to_4d(id1)
 
         if(two_ids):
-            id2 = Image.open("./aug_images/{}/edited/{}".format("attr_test", "7.png")).convert("RGB")
+            id2 = Image.open("./aug_images/{}/edited/{}".format("comparision", "7.png")).convert("RGB")
             face2 = pil_to_4d(id2)
 
         grid_count = len(os.listdir(outpath)) - 1

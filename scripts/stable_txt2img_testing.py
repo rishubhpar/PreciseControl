@@ -461,7 +461,7 @@ def main():
             if(two_ids):
                 multi_faces_list = [pil_to_4d(id1)]
                 for i in range(len(multi_face)):
-                    id2 = Image.open("./aug_images/{}/edited/{}".format("comp", multi_face[i])).convert("RGB")
+                    id2 = Image.open("./aug_images/{}/edited/{}".format("comparision", multi_face[i])).convert("RGB")
                     multi_faces_list.append(pil_to_4d(id2))
                 # id2 = Image.open("./aug_images/{}/edited/{}".format("compton", "2.jpg")).convert("RGB")
                 # faces2 = pil_to_4d(id2)

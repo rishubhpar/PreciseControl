@@ -470,10 +470,10 @@ def main():
             # opt.eval_id1 = np.random.randint(len(os.listdir("/home/test/rishubh/sachi/CelebBasisV2/aug_images/stylegan3/edited/"))-1)
             # test_id2 = (opt.eval_id1 + 1) % 10
             test_id2 = 0
-            id1 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/attr_test/edited/{}".format(
-                os.listdir("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/attr_test/edited/")[opt.eval_id1])).convert("RGB")
-            id2 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/attr_test/edited/{}".format(
-                os.listdir("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/attr_test/edited/")[test_id2])).convert("RGB")
+            id1 = Image.open("./aug_images/attr_test/edited/{}".format(
+                os.listdir("./aug_images/attr_test/edited/")[opt.eval_id1])).convert("RGB")
+            id2 = Image.open("./aug_images/attr_test/edited/{}".format(
+                os.listdir("./aug_images/attr_test/edited/")[test_id2])).convert("RGB")
 
         else:
             raise ValueError('Eval dataset not supported:', opt.eval_dataset)
@@ -495,7 +495,7 @@ def main():
         # faces = torch.cat([pil_to_4d(id1), pil_to_4d(id2)], dim=-1)
         faces = pil_to_4d(id1)
         import json
-        delta_w_dict = json.load(open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/all_delta_w_dict.json"))
+        delta_w_dict = json.load(open("./all_delta_w_dict.json"))
         # Flame attr stengths: (smile-0-1.4), (eyeglasses-1-2.2), (beard-0.4-2), (bang-0.4-1.8), (pose-0.6,2.5)
         # flame guitar edit - (beard-0.4,1.3)
         # seed sample face-(42,3), guitar-(42,0), knight-(2,3)
@@ -554,24 +554,24 @@ def main():
         # grid_count = len(os.listdir(outpath)) 
 
     folder_name = "comparision_new"
-    files_list = os.listdir("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/".format(folder_name))
+    files_list = os.listdir("./aug_images/{}/edited/".format(folder_name))
     if(not do_one_identity):
         files_list = ["3_0.png", "2_0.jpg", "6_0.jpg", "7_0.jpg", "8_0.jpeg", "7.png", "5.png"]
         # files_list = ["8_0.jpeg", "7.png", "5.png"]
         
     for i, files in enumerate(files_list):
         files = "einstein1.jpg"
-        id1 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/{}".format(folder_name,files)).convert("RGB")
+        id1 = Image.open("./aug_images/{}/edited/{}".format(folder_name,files)).convert("RGB")
         faces = pil_to_4d(id1)
 
         if(two_ids):
             multi_faces_list = [pil_to_4d(id1)]
             multi_faces_list1 = [pil_to_4d(id1,1)]
             for i in range(len(multi_face)):
-                id2 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/{}".format("comparision_new", multi_face[i])).convert("RGB")
+                id2 = Image.open("./aug_images/{}/edited/{}".format("comparision", multi_face[i])).convert("RGB")
                 multi_faces_list.append(pil_to_4d(id2))
                 multi_faces_list1.append(pil_to_4d(id2,1))
-            # id2 = Image.open("/mnt/data/rishubh/sachi/CelebBasis_pstar_sd2/aug_images/{}/edited/{}".format("comp", "8.jpeg")).convert("RGB")
+            # id2 = Image.open("./aug_images/{}/edited/{}".format("comp", "8.jpeg")).convert("RGB")
             # face2 = pil_to_4d(id2)
 
         grid_count = len(os.listdir(outpath)) - 1

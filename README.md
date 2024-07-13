@@ -70,6 +70,8 @@ python -m pip install git+https://github.com/cloneofsimo/lora.git
 - [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1-base)   
 - [CosFace R100](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo) for face computing Identity Loss
 - [Encoder4Editing (E4E)](https://github.com/omertov/encoder4editing?tab=readme-ov-file).
+- [PIPNet](https://github.com/jhb86253817/PIPNet) for face preprocessing (align and crop). PIPNet weights can be downloaded from [this link](https://github.com/ygtxr1997/CelebBasis/issues/2#issuecomment-1607775140) (provided by @justindujardin) or our [Baidu Yun Drive](https://pan.baidu.com/s/1Cgw0i723SyeLo5lbJu-b0Q) with extracting code: `ygss`. Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `PreciseControl/evaluation/face_align/PIPNet/weights/`. 
+- Mapper weights [wt_mapper](https://drive.google.com/drive/folders/1ScrLSa-S1Epc8fO_FBkMJvFae9EO226b?usp=sharing) and copy it under logs directory 
   
 Copy the pretrained weights to './weights' folder, the directory structure is shown below: 
 
@@ -95,11 +97,6 @@ PreciseControl/
       
 ```
 
-Additional modules 
-- [PIPNet](https://github.com/jhb86253817/PIPNet) for face preprocessing (align and crop). PIPNet weights can be downloaded from [this link](https://github.com/ygtxr1997/CelebBasis/issues/2#issuecomment-1607775140) (provided by @justindujardin)
-or our [Baidu Yun Drive](https://pan.baidu.com/s/1Cgw0i723SyeLo5lbJu-b0Q) with extracting code: `ygss`. Please copy `epoch59.pth` and `FaceBoxesV2.pth` to `PreciseControl/evaluation/face_align/PIPNet/weights/`. 
-- Mapper weights [wt_mapper](https://drive.google.com/drive/folders/1ScrLSa-S1Epc8fO_FBkMJvFae9EO226b?usp=sharing) and copy it under logs directory 
-
 ### Usage
 
 #### 0. Face Alignment
@@ -108,19 +105,20 @@ To make the Face Recognition model work as expected,
 given an image of a person, 
 we first align and crop the face following [FFHQ-Dataset](https://github.com/NVlabs/ffhq-dataset).
 
-Assuming your image folder is `./aug_images/comparision` and the output folder is `./aug_images/comparision/edited/`,
-you may run the following command to align & crop images.
+Put your input images in `./aug_images/comparision` and run the following command with output path as `./aug_images/comparision/edited/`,
+this will align & crop images the input images as per e4e requirement and save images in format required for lora finetuning. The above code also save the aligned images in `./aug_images/lora_finetune_comparision_data/` with each image in a folder structure required by dataloader for finetuning.  
 
 ```shell
 bash ./00_align_face.sh ./aug_images/comparision ./aug_images/comparision/edited/
 ```
 
-For example, we provide some cropped faces in `./aug_images/comparision/edited`
+For example, we provide some faces in `./aug_images/comparision/`
 
 #### 1. Personalization
 
 The training config file is `./configs/stable-diffusion/aigc_id_for_lora.yaml`.
-The most important settings are listed as follows. The id_name folder structure should be 
+The most important settings are listed as follows. The id_name folder structure should be which should be taken care by above command
+
 ```shell
 id_name(eg: cook)
   |-- 0000/
@@ -174,7 +172,7 @@ Reduce the accumulate grad batches as per the GPU availablity, but for lower val
 
 **Training**
 ```shell
-# bash ./01_start_lora_finetuning.sh model weights folder_name_to_save_output
+# bash ./01_start_lora_finetuning.sh --model weights --folder_name_to_save_output
 bash ./01_start_lora_finetuning.sh ./weights/v2-1_512-ema-pruned.ckpt.ckpt id_name
 ```
 
@@ -182,8 +180,7 @@ Consequently, a project folder named `id_name` is generated under `./logs`.
 
 #### 2. Generation
 
-Edit the prompt file `./infer_images/example_prompt_1.txt`, where `sks` denotes the first identity. `image_name.jpg` should be present inside 
-`./aug_images/comparision/edited/` or else manually you have to change the root dir in code. To get better identity increase lora scale parameter, but this might reduce text editability.
+Edit the prompt file `./infer_images/example_prompt_1.txt`, where `sks` denotes the first identity. To get better identity increase lora scale parameter, but this might reduce text editability.
 
 <!-- Optionally, in `./02_start_test.sh`, you may modify the following var as you need:
 ```shell
@@ -194,7 +191,7 @@ eval_id2_list=(1)  # the ID index of the 2nd person, e.g. (0 1 2 3 4)
 
 **Testing**
 ```shell
-# bash ./02_start_test.sh sd_weights_path text_prompt_path logs_folder_name "0 0 0 0" (whether to add lora weights) batch_size lora_it lora_scale image_name
+# bash ./02_start_test.sh sd_weights_path text_prompt_path --logs_folder_name "0 0 0 0" --is_lora_weight_used --batch_size --lora_iteration --lora_scale --image_name
 bash ./02_start_test.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 4 49 0.2 image_name.jpg 
 ```
 
@@ -207,7 +204,7 @@ Edit the prompt file `./infer_images/example_prompt.txt`, where `sks` denotes th
 
 **Testing attr edit**
 ```shell
-# bash ./02_start_test_pmm.sh sd_weights_path text_prompt_path logs_folder_name "0 0 0 0" (whether to add lora weights) batch_size(use 1) lora_it lora_scale image_name attr_name
+# bash ./02_start_test_pmm.sh sd_weights_path text_prompt_path --logs_folder_name "0 0 0 0" --(whether to add lora weights) --batch_size(use 1) --lora_it --lora_scale --image_name --edit_attr_name
 bash ./02_start_test_pmm.sh "./weights/v2-1_512-ema-pruned.ckpt" "./infer_images/example_prompt_1.txt" id_name "0 0 0 0" True 1 49 0.2 image_name.jpg attr_name
 ```
 This will generate a gif and list of images with different edit strength.

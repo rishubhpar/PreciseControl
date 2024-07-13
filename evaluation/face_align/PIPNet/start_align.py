@@ -30,6 +30,9 @@ def main(args):
     set_random_seed(0)
     torch.multiprocessing.set_start_method('spawn')
 
+    if os.path.exists(args.out_folder):
+        os.system('rm -r %s' % args.out_folder)
+
     folder_dataset = FolderAlignCrop(
         args.in_folder,
         image_size=args.out_size,
@@ -44,9 +47,14 @@ def main(args):
         shuffle=False,
     )
 
-    if os.path.exists(args.out_folder):
-        os.system('rm -r %s' % args.out_folder)
+    
     os.makedirs(args.out_folder, exist_ok=True)
+
+    input_path = args.in_folder
+    input_path = "/".join(input_path.split('/')[:-1])
+    lora_finetune_path = os.path.join(input_path, 'lora_finetune_comparision_data')
+    print("lora finetune path :", lora_finetune_path)
+
 
     img_cnt = 0
     batch_idx = 0
@@ -63,11 +71,16 @@ def main(args):
                 continue
             img_t = Image.fromarray(arr_t[b])
             img_t.save(os.path.join(args.out_folder, img_name[b]))
+            if(not os.path.exists(os.path.join(lora_finetune_path, img_name[b].split(".")[0],"0000"))):
+                os.makedirs(os.path.join(lora_finetune_path, img_name[b].split(".")[0],"0000"))
+            img_t.save(os.path.join(lora_finetune_path, img_name[b].split(".")[0], "0000", img_name[b]))
+
+            img_t.save
             img_cnt += 1
 
     if args.out_pickle is None:
         args.out_pickle = "{}.pickle".format(args.out_folder)
-    gen_pickle_abs(args.out_folder, args.out_pickle)
+    # gen_pickle_abs(args.out_folder, args.out_pickle)
 
 
 if __name__ == "__main__":

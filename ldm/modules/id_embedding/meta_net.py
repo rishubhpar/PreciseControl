@@ -424,65 +424,6 @@ class MetaIdNet(nn.Module):
         z = F.normalize(z, dim=1)
 
         return z, None
-
-    def _celebs_forward_old(self, img: torch.Tensor, id_idx: torch.Tensor,
-                        celebs_embeds: torch.Tensor):
-        if not self.use_rm_mlp:
-            with torch.no_grad():
-                # print("Its getting called")
-                img = img.permute(0, 3, 1, 2)  # to (N,C,H,W)
-
-                M = self.trans_matrix.repeat(img.size()[0], 1, 1)  # to (B,2,3)
-                grid = F.affine_grid(M, size=img.size(), align_corners=True)  # 得到grid 用于grid sample
-                img = F.grid_sample(img, grid, align_corners=True, mode="bilinear", padding_mode="zeros")  # warp affine
-
-                img = F.interpolate(img, size=112, mode="bilinear", align_corners=True)
-
-                # print("[img]", img.shape)
-                self.id_model.eval()
-                v = self.id_model(img)
-                v = F.normalize(v, dim=-1, p=2)
-
-            x = self.stylegan_mlp(v)  # x:(N,num_es*heads*inner_dim)
-            x = rearrange(x, 'b (e h d) -> b e h d',
-                          e=self.num_es, h=self.heads).contiguous()  # (N,num_es,heads,inner_dim)
-            # print("[x]", x.shape)
-            if celebs_embeds is not None:
-                x = self.to_weight(x)  # (N,num_es,heads,inner_dim)
-        else:  # for ablation study
-            x = self.coef[id_idx]
-
-        if celebs_embeds is not None:
-            ''' 3dmm/pca-based svd '''
-            c_all = celebs_embeds.to(x.device).detach()  # (es,1+inner_dim,768)
-            c_mean, pca_base = c_all[:, 0], c_all[:, 1:]  # mean:(es,768), pca_base:(es,inner_dim,768)
-            c_mean = c_mean.unsqueeze(1).unsqueeze(0)  # mean:(1,es,1,768)
-            # print("[cmean]", c_mean.shape)
-            # print("[pca_base]", pca_base.shape)
-            if not self.vis_mean:
-                z = torch.einsum('b e h k, e k c -> b e h c', x, pca_base) + c_mean  # (N,num_es,heads,768)
-            else:   # for ablation study
-                mean, std = self.vis_mean_params if self.vis_mean_params is not None else (0., 0.)
-                noise = torch.randn_like(x, device=x.device) * std + mean
-                z = torch.einsum('b e h k, e k c -> b e h c', noise, pca_base) + c_mean  # (N,num_es,heads,768)
-        else:
-            z = x
-            assert x.shape[-1] == 768
-        z = rearrange(z, 'b e h c -> b (e h) c').contiguous()  # (N,num_es*heads,768)
-
-        ''' for calculating id loss (not used) '''
-        if self.use_header:  # num_es not supported here
-            with torch.no_grad():
-                z = self.features(z)
-            if not self.training:
-                return z, None, x
-            else:
-                pred_cls = self.id_header(z, id_idx)
-                return z, pred_cls, x
-
-        # z = F.normalize(z, dim=1)  # F.norm:|v|=1, removing this can be better
-        # print("[z] [x]", z.shape, x.shape)
-        return z, None, x
     
     def _celebs_forward(self, img: torch.Tensor, id_idx: torch.Tensor,
                         celebs_embeds: torch.Tensor, aligned_faces=None, h_space=None, t=None, w_latents=None, delta_w=None):

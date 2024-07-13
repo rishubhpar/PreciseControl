@@ -67,7 +67,7 @@ python -m pip install git+https://github.com/cloneofsimo/lora.git
 
 ### Pretrained weights:
 - [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything)  
-- [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1)   
+- [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1-base)   
 - [CosFace R100](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo) for face computing Identity Loss
 - [Encoder4Editing (E4E)](https://github.com/omertov/encoder4editing?tab=readme-ov-file).
   
@@ -89,7 +89,7 @@ PreciseControl/
           |-- e4e_ffhq_encode.pt(~1.1GB)
           |-- shape_predictor_68_face_landmarks.dat
       |-- clip_face_basis100k_pca_wo_mean.pkl (not used)
-      |-- v2-1_768-ema-pruned.ckpt (~7.0GB)
+      |-- v2-1_512-ema-pruned.ckpt (~5.0GB)
       |-- model_ir_se50.pt
       |-- sam_vit_b_01ec64.pth (for multi person)
       |-- groundingdino_swint_ogc.pth (for multi person)
@@ -123,7 +123,7 @@ For example, we provide some cropped faces in `./aug_images/comparision/edited`
 The training config file is `./configs/stable-diffusion/aigc_id_for_lora.yaml`.
 The most important settings are listed as follows. The id_name folder structure should be 
 ```shell
-id_name
+id_name(eg: cook)
   |-- 0000/
       |-- img.jpg
 ```
@@ -176,7 +176,7 @@ Reduce the accumulate grad batches as per the GPU availablity, but for lower val
 **Training**
 ```shell
 # bash ./01_start_lora_finetuning.sh model weights folder_name_to_save_output
-bash ./01_start_lora_finetuning.sh ./weights/v2-1_768-ema-pruned.ckpt id_name
+bash ./01_start_lora_finetuning.sh ./weights/v2-1_512-ema-pruned.ckpt.ckpt id_name
 ```
 
 Consequently, a project folder named `id_name` is generated under `./logs`. 

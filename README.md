@@ -134,7 +134,7 @@ data:
     train:
       target: ldm.data.face_id.FFhq_dataset 
       params:
-        root_dir: "./aug_images/lora_finetune_comparision_data/id_name/"
+        root_dir: "absoulute path for the id_name folder" e.g. /data/.../id_name
         split: train
         use_aug: False
         image_size: 512
@@ -146,7 +146,7 @@ data:
     validation:
       target: ldm.data.face_id.FFhq_dataset
       params:
-        root_dir: "./aug_images/lora_finetune_comparision_data/id_name/"
+        root_dir: "absoulute path for the id_name folder" e.g. /data/.../id_name 
 ```
 
 **Important Training Settings**

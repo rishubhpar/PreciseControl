@@ -16,4 +16,3 @@ python ./evaluation/face_align/PIPNet/start_align.py  \
   --in_folder "${IN_FOLDER}"  \
   --out_folder "${OUT_FOLDER}"
 
-# loop for file name in Input folder

@@ -765,7 +765,7 @@ def main():
                                         #     prompts_for_tokenization = prompts_for_tokenization.replace(" ks", " ks rn")
                                         tokenized_prompt = nltk.word_tokenize(prompts_for_tokenization)
                         
-                                        print("tokenized prompt :", tokenized_prompt)
+                                        # print("tokenized prompt :", tokenized_prompt)
                                         nouns = [(l, word) for (l, (word, pos)) in enumerate(nltk.pos_tag(tokenized_prompt)) if pos[:2] == 'NN']
                                         object_to_preserve_index = [l+1 for (l, word) in nouns if word not in ("sks", "ry", "ks", "rn")]
                                         # object_to_preserve_index = [prompts[0].replace("sks", "sks ks").split(" ").index("person")+1]

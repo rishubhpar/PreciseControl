@@ -467,7 +467,7 @@ def main():
         delta_w_lambda = 1
         attr = opt.attr
         attr2 = "gender"
-        attr1_range = 1 * np.round(np.arange(0.0, 2.5, 0.1), 3)
+        attr1_range = 1 * np.round(np.arange(0.3, 2.0, 0.1), 3)
         attr2_range = 1 * np.round(np.arange(1.5, 3, 0.2), 3) if attr2 is not None else []
         save_folder = 'delta_w_test'
         use_prompt_mixing = True
@@ -635,7 +635,7 @@ def main():
                                                 delta_w1 = torch.tensor(delta_w_dict[attr], device=device).repeat(batch_size, 1, 1) * weight_lambda1
                                                 delta_w2 = torch.tensor(delta_w_dict[attr2], device=device).repeat(batch_size, 1, 1) * weight_lambda2
                                                 delta_w = delta_w1 + delta_w2
-                                                print("weight_lambda ,", weight_lambda, "weight_lambda1 ,", weight_lambda1, "weight_lambda2 ,", weight_lambda2)
+                                                # print("weight_lambda ,", weight_lambda, "weight_lambda1 ,", weight_lambda1, "weight_lambda2 ,", weight_lambda2)
                                             else:
                                                 delta_w = torch.tensor(delta_w_dict[attr], device=device).repeat(batch_size, 1, 1) * weight_lambda1 if attr is not None else None
 
@@ -648,7 +648,7 @@ def main():
                                         seed_everything(opt.seed)
                                         prompt_mixing_prompt = [prompt.replace("sks person","brad pitt") for prompt in prompts]
                                         prompt_mixing_prompt = [prompt_mix.replace("ks person","ryan gosling") for prompt_mix in prompt_mixing_prompt]
-                                        print("prompt_mixing_prompt", prompt_mixing_prompt)
+                                        # print("prompt_mixing_prompt", prompt_mixing_prompt)
 
                                         context_image_for_ddim = {'face_img': context_image_ori["faces"], 'image_ori': context_image_ori, 'aligned_faces': None,
                                                           'caption': prompts, 'prompt_mixing_prompt': prompt_mixing_prompt,
@@ -681,23 +681,23 @@ def main():
                                             prompts_for_tokenization = prompts_for_tokenization.replace(" ks", " ks rn")
                                         tokenized_prompt = nltk.word_tokenize(prompts_for_tokenization)
                         
-                                        print("tokenized prompt :", tokenized_prompt)
+                                        # print("tokenized prompt :", tokenized_prompt)
                                         nouns = [(l, word) for (l, (word, pos)) in enumerate(nltk.pos_tag(tokenized_prompt)) if pos[:2] == 'NN']
                                         object_to_preserve_index = [l+1 for (l, word) in nouns if word not in ("sks", "ry", "ks", "rn")]
                                         # object_to_preserve_index = [prompts[0].replace("sks", "sks ks").split(" ").index("person")+1]
-                                        print("object_of_interest_index", object_of_interest_index, object_to_preserve_index)
-                                        print("average_attention", average_attention.keys(), len(average_attention['input_self']))
+                                        # print("object_of_interest_index", object_of_interest_index, object_to_preserve_index)
+                                        # print("average_attention", average_attention.keys(), len(average_attention['input_self']))
                                         pm = PromptMixing(args, object_of_interest_index, objects_to_preserve=object_to_preserve_index, 
                                                           avg_cross_attn=average_attention,orig_mask=orig_mask)
                                         
                                         seed_everything(opt.seed)
                                         do_other_obj_self_attn_masking = len(args.objects_to_preserve) > 0 and args.end_preserved_obj_self_attn_masking > 0
                                         do_self_or_cross_attn_inject = args.cross_attn_inject_steps != 0.0 or args.self_attn_inject_steps != 0.0
-                                        if do_other_obj_self_attn_masking:
-                                            print("Do self attn other obj masking")
-                                        if do_self_or_cross_attn_inject:
-                                            print(f'Do self attn inject for {args.self_attn_inject_steps} steps')
-                                            print(f'Do cross attn inject for {args.cross_attn_inject_steps} steps')
+                                        # if do_other_obj_self_attn_masking:
+                                        #     print("Do self attn other obj masking")
+                                        # if do_self_or_cross_attn_inject:
+                                        #     print(f'Do self attn inject for {args.self_attn_inject_steps} steps')
+                                        #     print(f'Do cross attn inject for {args.cross_attn_inject_steps} steps')
 
                                         if(do_self_or_cross_attn_inject):
                                             controller = AttentionReplace(image_for_ddim, model, model.device, args.low_resource, 50,

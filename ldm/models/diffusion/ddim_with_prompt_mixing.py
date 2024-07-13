@@ -388,7 +388,7 @@ class DDIMSamplerWrapper(object):
         cross_att_count = 0
         sub_nets = self.model.model.named_children().__iter__().__next__()[1].named_children()
         for net in sub_nets:
-            print(net[0])
+            # print(net[0])
             if "input" in net[0]:
                 cross_att_count += register_recr(net[1], 0, "input")
             elif "output" in net[0]:

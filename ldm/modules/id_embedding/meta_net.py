@@ -13,7 +13,7 @@ from ldm.modules.id_embedding.iresnet import iresnet100
 from ldm.modules.diffusionmodules.model import Normalize
 from ldm.modules.e4e.encoders.psp_encoders import Encoder4Editing
 from ldm.modules.e4e.psp import pSp
-from ldm.modules.e4e_human.psp import pSp as pSp_human
+# from ldm.modules.e4e_human.psp import pSp as pSp_human
 from ldm.modules.e4e.stylegan2.model import ModulatedConv2d, ScaledLeakyReLU
 from  ldm.modules.e4e.stylegan2.op import FusedLeakyReLU
 from ldm.modules.diffusionmodules.openaimodel import ResNet_timestep_embedder
@@ -268,7 +268,8 @@ class MetaIdNet(nn.Module):
         if(self.domain_name=="face"):
             self.load_e4e_with_decoder('./weights/encoder/e4e_ffhq_encode.pt')
         elif(self.domain_name in ["human", 'dress']):
-            self.initilize_human_e4e("./weights/e4e_human.pt")
+            # self.initilize_human_e4e("./weights/e4e_human.pt")
+            pass
 
         self.register_buffer(
             name="trans_matrix",
@@ -604,24 +605,6 @@ class MetaIdNet(nn.Module):
             param.requires_grad = False
         self.id_model.eval()
     
-    def load_e4e_encoder(self,checkpoint_path, device='cuda'):
-        ckpt = torch.load(checkpoint_path, map_location='cpu')
-        opts = argparse.Namespace(**ckpt['opts'])
-        e4e = Encoder4Editing(50, 'ir_se', opts)
-        e4e_dict = {k.replace('encoder.', ''): v for k, v in ckpt['state_dict'].items() if k.startswith('encoder.')}
-        e4e.load_state_dict(e4e_dict)
-        e4e.eval()
-        e4e.cuda()
-        for param in e4e.parameters():
-            param.requires_grad = False
-        latent_avg = ckpt['latent_avg'].to(device)
-
-        def add_latent_avg(model, inputs, outputs):
-            return outputs + latent_avg.repeat(outputs.shape[0], 1, 1)
-
-        e4e.register_forward_hook(add_latent_avg)
-        return e4e
-    
     def load_e4e_with_decoder(self,checkpoint_path, device='cuda'):
         ckpt = torch.load(checkpoint_path, map_location='cpu')
         opts = ckpt['opts']
@@ -650,24 +633,6 @@ class MetaIdNet(nn.Module):
         if codes.shape[1] == 18 and is_cars:
             codes = codes[:, :16, :]
         return codes
-
-    def initilize_human_e4e(self, checkpoint_path, device="cuda"):
-        ckpt = torch.load(checkpoint_path, map_location='cpu')
-        opts = ckpt['opts']
-        opts['batch_size'] = 1
-        opts['checkpoint_path'] = checkpoint_path
-        opts = argparse.Namespace(**opts)
-        self.e4e_encoder = pSp_human(opts)
-        self.e4e_encoder.eval()
-        self.e4e_encoder = self.e4e_encoder.to(device)
-        self.e4e_image_transform = transforms.Compose([
-            # transforms.ToPILImage(),
-            transforms.Resize((256, 128)),
-            # transforms.ToTensor(),
-            # transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])
-            ])
-        for param in self.e4e_encoder.parameters():
-            param.requires_grad = False
 
     def get_human_e4e_inversion(self, image):
         # image = (image + 1) / 2
@@ -698,7 +663,8 @@ class MetaIdNet(nn.Module):
             if self.use_rm_mlp and 'coef' in key:
                 trainable_state_dict[key] = val
         if verbose:
-            print('[meta_net] trainable_state_dict ready to save.', list(trainable_state_dict.keys()))
+            # print('[meta_net] trainable_state_dict ready to save.', list(trainable_state_dict.keys()))
+            pass
         return trainable_state_dict
 
     def load_trainable_state_dict(self, state_dict: dict, verbose=False):
@@ -722,8 +688,8 @@ class MetaIdNet(nn.Module):
                 trainable_state_dict[key] = val
         self.load_state_dict(trainable_state_dict, strict=False)
         if verbose:
-            print('[meta_net] trainable_state_dict loaded.', list(trainable_state_dict.keys()))
-
+            # print('[meta_net] trainable_state_dict loaded.', list(trainable_state_dict.keys()))
+            pass
 
 class MlpBlock(nn.Module):
     def __init__(self, in_dim, mlp_dim, out_dim):

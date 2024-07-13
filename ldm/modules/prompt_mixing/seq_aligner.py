@@ -159,8 +159,8 @@ def get_replacement_mapper_(x: str, y: str, tokenizer, max_len=77):
     inds_source = [get_word_inds(x, i, tokenizer) for i in inds_replace]
     inds_target = [get_word_inds(y, i, tokenizer) for i in inds_replace]
 
-    print("inds_source", inds_source)
-    print("inds_target", inds_target)
+    # print("inds_source", inds_source)
+    # print("inds_target", inds_target)
     mapper = np.zeros((max_len, max_len))
     i = j = 0
     cur_inds = 0
@@ -185,7 +185,7 @@ def get_replacement_mapper_(x: str, y: str, tokenizer, max_len=77):
             i += 1
             j += 1
 
-    print("mapper", mapper)
+    # print("mapper", mapper)
     return torch.from_numpy(mapper).float()
 
 

@@ -470,7 +470,7 @@ def main():
     
         import nltk
         tokenized_prompt = nltk.word_tokenize(temp_neg)
-        print("tokenized prompt :", tokenized_prompt)
+        # print("tokenized prompt :", tokenized_prompt)
 
         print("testing identity", l)
         # print("delta w shape :", np.array(delta_w_dict[attr]).shape)

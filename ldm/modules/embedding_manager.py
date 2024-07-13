@@ -112,9 +112,7 @@ class EmbeddingManager(nn.Module):
             placeholder_embedding = self.string_to_param_dict[placeholder_string].to(device)
 
             if self.max_vectors_per_token == 1: # If there's only one vector per token, we can do a simple replacement
-                # print('token', placeholder_token, placeholder_token.shape)  # [265]
-                # print('embedding', placeholder_embedding, placeholder_embedding.shape)  # (1,768)
-                # print('tokenized_text', tokenized_text)  # [[x,x,x,265,x,x],[y,y,y,265,y,y]]
+     
                 placeholder_idx = torch.where(tokenized_text == placeholder_token.to(device))
                 embedded_text[placeholder_idx] = placeholder_embedding
                 # print('placeholder_idx', placeholder_idx)  # [[0,1], [6,6]]
@@ -267,12 +265,7 @@ class EmbeddingManagerId(nn.Module):
             self.norm_reg_embedding = torch.norm(self.reg_embedding).to('cuda')
         else:
             self.norm_reg_embedding = None
-        # print(f"Token for output embedding: {self.token_for_output_distribution}")
-        # # print token for each word
-        # for i in range(len(self.words_close_to_output_distribution)):
-        #     print(f"{self.words_close_to_output_distribution[i]}: {self.token_for_output_distribution[i]}")
-        #     print(f"{self.words_close_to_output_distribution[i]}: {self.clip_embedding_for_output_distribution[i].shape}")
-            
+
         self.id_embeddings = [torch.zeros(
             num_embeds_per_token, token_dim
         )] * self.max_ids  # max_ids*(es,768)
@@ -365,10 +358,7 @@ class EmbeddingManagerId(nn.Module):
                 cef3 = cef[1]  # in training, the max #id is 2
                 self._embedding_to_device(device)
                 self._calc_id_neg_loss(meta, cls, ids, cef, device)
-                # print("[meta]", len(meta), meta[0].shape)
-                # print("[meta1]", len(meta1), meta1[0].shape)
-                # print("[meta2]", len(meta2), meta2[0].shape)
-                # print("[meta3]", len(meta3), meta3[0].shape)
+             
                 if torch.isnan(meta[0][0]).sum() >= 1:
                     print('[Warning NAN detected][meta1]', meta[0][0].mean(), meta[0][0].min(), meta[0][0].max(),
                           meta[0].shape,
@@ -393,9 +383,7 @@ class EmbeddingManagerId(nn.Module):
                     placeholder_token_r = self.string_to_token_dict[self.placeholder_strings[1]]
                     placeholder_pos_lr = get_rep_pos(tokenized_text[b_idx],
                                                      [placeholder_token_l, placeholder_token_r])
-                    # print('[tokenized]:', tokenized_text[b_idx])
-                    # print('[tok_l, tok_r, pos_lr]:', placeholder_token_l, placeholder_token_r, placeholder_pos_lr)
-
+     
                     embedded_text[b_idx], placeholder_final_pos_lr = shift_tensor_dim0(embedded_text[b_idx],
                                                                                        placeholder_pos_lr,
                                                                                        self.num_es * self.meta_heads)
@@ -410,25 +398,22 @@ class EmbeddingManagerId(nn.Module):
 
                 elif num_ids[b_idx] == 1:  # one person in an image
                     one_memo = self._momentum_update(meta1[b_idx], cef1[b_idx], ids[b_idx][0],interpolate_ids)  # (es,768)
-                    print("only one person is there")
+        
                     placeholder_token = self.string_to_token_dict[self.placeholder_strings[0]]
                     placeholder_pos = get_rep_pos(tokenized_text[b_idx],
                                                   [placeholder_token])
-                    # print('[tokenized]:', tokenized_text[b_idx])
-                    # print('[tok, pos]:', placeholder_token, placeholder_pos)
+
                     embedded_text[b_idx], placeholder_final_pos = shift_tensor_dim0(embedded_text[b_idx],
                                                                                     placeholder_pos,
                                                                                     self.num_es * self.meta_heads)
                     # print('[shifted, final_pos]:', embedded_text[b_idx].max(dim=-1)[0], placeholder_final_pos)
                     for one_pos in placeholder_final_pos[0]:
                         embedded_text[b_idx][one_pos] = one_memo.to(device)
-                    # print('[replaced]:', embedded_text[b_idx].max(dim=-1)[0])
 
                 elif num_ids[b_idx] == 3:  # three persons in an image
                     one_memo_l = self._momentum_update(meta1[b_idx], cef1[b_idx], ids[b_idx][0],interpolate_ids)  # refer to GroupNorm?
                     one_memo_r = self._momentum_update(meta2[b_idx], cef2[b_idx], ids[b_idx][1],interpolate_ids)
                     one_memo_3 = self._momentum_update(meta3[b_idx], cef3[b_idx], ids[b_idx][2],interpolate_ids)
-                    # print('[memo_l]', one_memo_l.mean(), one_memo_l.min(), one_memo_l.max())
 
                     placeholder_token_l = self.string_to_token_dict[self.placeholder_strings[0]]
                     placeholder_token_r = self.string_to_token_dict[self.placeholder_strings[1]]
@@ -437,13 +422,10 @@ class EmbeddingManagerId(nn.Module):
                                                      [placeholder_token_l,
                                                       placeholder_token_r,
                                                       placeholder_token_3])
-                    # print('[tokenized]:', tokenized_text[b_idx])
-                    # print('[tok_l, tok_r, pos_lr]:', placeholder_token_l, placeholder_token_r, placeholder_pos_lr)
-
+                  
                     embedded_text[b_idx], placeholder_final_pos_lr = shift_tensor_dim0(embedded_text[b_idx],
                                                                                        placeholder_pos_lr,
                                                                                        self.num_es * self.meta_heads)
-                    # print('[shifted, final_pos_lr]:', embedded_text[b_idx].max(dim=-1)[0], placeholder_final_pos_lr)
                     placeholder_final_pos_l = placeholder_final_pos_lr[0]
                     placeholder_final_pos_r = placeholder_final_pos_lr[1]
                     placeholder_final_pos_3 = placeholder_final_pos_lr[2]
@@ -453,7 +435,6 @@ class EmbeddingManagerId(nn.Module):
                         embedded_text[b_idx][one_pos] = one_memo_r.to(device)
                     for one_pos in placeholder_final_pos_3:
                         embedded_text[b_idx][one_pos] = one_memo_3.to(device)
-                    # print('[replaced]:', embedded_text[b_idx].max(dim=-1)[0])
         return embedded_text
     
     def forward(
@@ -493,18 +474,11 @@ class EmbeddingManagerId(nn.Module):
                     meta2 = meta[1]  # one of diff ids
                 # meta3 = meta[id_cnt // 2]  # if training: 2nd aug of x, for calculating 'contra' loss;
 
-                # cef1 = cef[0]  # cef1:(N,es,h,inner_dim)
-                # cef2 = cef[1]
-                # cef3 = cef[1]  # in training, the max #id is 2
-
                 # TODO: Check this loss code
                 if self.test_mode != 'image':
                     self._embedding_to_device(device)
                 self._calc_id_neg_loss(meta, cls, ids, cef, reg_loss, device)
-                # print("[meta]", len(meta), meta[0].shape)
-                # print("[meta1]", len(meta1), meta1[0].shape)
-                # print("[meta2]", len(meta2), meta2[0].shape)
-                # print("[meta3]", len(meta3), meta3[0].shape)
+ 
                 if torch.isnan(meta[0][0]).sum() >= 1:
                     print('[Warning NAN detected][meta1]', meta[0][0].mean(), meta[0][0].min(), meta[0][0].max(),
                           meta[0].shape,
@@ -553,8 +527,6 @@ class EmbeddingManagerId(nn.Module):
             ''' momentum update and swap embedded_text '''
             for b_idx in range(b):
                 if num_ids[b_idx] == 2:  # two persons in an image
-                    # one_memo_l = self._momentum_update(meta1[b_idx], cef1[b_idx], ids[b_idx][0],interpolate_ids)  # refer to GroupNorm?
-                    # one_memo_r = self._momentum_update(meta2[b_idx], cef2[b_idx], ids[b_idx][1],interpolate_ids)
                     one_memo_l = meta1[b_idx]
                     one_memo_r = meta2[b_idx]
                     # print('[memo_l]', one_memo_l.mean(), one_memo_l.min(), one_memo_l.max())
@@ -562,9 +534,7 @@ class EmbeddingManagerId(nn.Module):
                     placeholder_token_r = self.string_to_token_dict[self.placeholder_strings[1]]
                     placeholder_pos_lr = get_rep_pos(tokenized_text[b_idx],
                                                      [placeholder_token_l, placeholder_token_r])
-                    # print('[tokenized]:', tokenized_text[b_idx])
-                    # print('[tok_l, tok_r, pos_lr]:', placeholder_token_l, placeholder_token_r, placeholder_pos_lr)
-
+              
                     embedded_text[b_idx], placeholder_final_pos_lr = shift_tensor_dim0(embedded_text[b_idx],
                                                                                        placeholder_pos_lr,
                                                                                        self.num_es * self.meta_heads)
@@ -584,15 +554,12 @@ class EmbeddingManagerId(nn.Module):
                     placeholder_token = self.string_to_token_dict[self.placeholder_strings[0]]
                     placeholder_pos = get_rep_pos(tokenized_text[b_idx],
                                                   [placeholder_token])
-                    # print('[tokenized]:', tokenized_text[b_idx])
-                    # print('[tok, pos]:', placeholder_token, placeholder_pos)
                     embedded_text[b_idx], placeholder_final_pos = shift_tensor_dim0(embedded_text[b_idx],
                                                                                     placeholder_pos,
                                                                                     self.num_es * self.meta_heads)
                     # print('[shifted, final_pos]:', embedded_text[b_idx].max(dim=-1)[0], placeholder_final_pos)
                     for one_pos in placeholder_final_pos[0]:
                         embedded_text[b_idx][one_pos] = one_memo.to(device)
-                    # print('[replaced]:', embedded_text[b_idx].max(dim=-1)[0])
 
                 elif num_ids[b_idx] == 3:  # three persons in an image
                     one_memo_l = self._momentum_update(meta1[b_idx], cef1[b_idx], ids[b_idx][0],interpolate_ids)  # refer to GroupNorm?

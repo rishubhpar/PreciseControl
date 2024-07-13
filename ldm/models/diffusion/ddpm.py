@@ -235,7 +235,8 @@ class DDPM(pl.LightningModule):
             sd, strict=False)
         print(f"Restored from {path} with {len(missing)} missing and {len(unexpected)} unexpected keys")
         if len(missing) > 0:
-            print(f"Missing Keys: {missing}")
+            # print(f"Missing Keys: {missing}")
+            pass
         if len(unexpected) > 0:
             print(f"Unexpected Keys: {unexpected}")
 
@@ -563,26 +564,12 @@ class LatentDiffusion(DDPM):
 
 
     def make_cond_schedule(self, ):
-        print("making cond schedule")
         self.cond_ids = torch.full(size=(self.num_timesteps,), fill_value=self.num_timesteps - 1, dtype=torch.long)
         ids = torch.round(torch.linspace(0, self.num_timesteps - 1, self.num_timesteps_cond)).long()
         self.cond_ids[:self.num_timesteps_cond] = ids
 
     def load_human_parsing(self,):
-        # body_estimation = Body('./src/stylegan_human/openpose/model/body_pose_model.pth')
-        ## initialzide HumenSeg
-        human_seg_args = {}
-        human_seg_args['cfg'] = './src/stylegan_human/PP_HumanSeg/export_model/deeplabv3p_resnet50_os8_humanseg_512x512_100k_with_softmax/deploy.yaml'
-        human_seg_args['input_shape'] = [512,512]
-        human_seg_args['save_dir'] = "./paddle_seg_output"
-        human_seg_args['soft_predict'] = False
-        human_seg_args['use_gpu'] = True
-        human_seg_args['test_speed'] = False
-        human_seg_args['use_optic_flow'] = False
-        human_seg_args['add_argmax'] = True
-        human_seg_args= argparse.Namespace(**human_seg_args)
-        self.human_seg = [PP_HumenSeg_Predictor(human_seg_args)]
-        self.face_detector = Ultralight320Detector()
+        pass
         # for params in self.human_seg[0].parameters():
         #     params.requires_grad = False
 
@@ -703,13 +690,11 @@ class LatentDiffusion(DDPM):
                           given_betas=None, beta_schedule="linear", timesteps=1000,
                           linear_start=1e-4, linear_end=2e-2, cosine_s=8e-3):
         super().register_schedule(given_betas, beta_schedule, timesteps, linear_start, linear_end, cosine_s)
-        print("register schedule")
         self.shorten_cond_schedule = self.num_timesteps_cond > 1
         if self.shorten_cond_schedule:
             self.make_cond_schedule()
 
     def instantiate_first_stage(self, config):
-        print("instantiate first stage")
         model = instantiate_from_config(config)
         self.first_stage_model = model.eval()
         self.first_stage_model.train = disabled_train
@@ -717,10 +702,8 @@ class LatentDiffusion(DDPM):
             param.requires_grad = False
 
     def instantiate_cond_stage(self, config):
-        print("instantiate cond stage")
         if not self.cond_stage_trainable:
             if config == "__is_first_stage__":
-                print("Using first stage also as cond stage.")
                 self.cond_stage_model = self.first_stage_model
             elif config == "__is_unconditional__":
                 print(f"Training {self.__class__.__name__} as an unconditional model.")
@@ -740,7 +723,6 @@ class LatentDiffusion(DDPM):
             
     
     def instantiate_embedding_manager(self, config, embedder):
-        print("instantiate embedding manager")
         model = instantiate_from_config(config, embedder=embedder)
 
         if config.params.get("embedding_manager_ckpt", None): # do not load if missing OR empty string
@@ -749,7 +731,6 @@ class LatentDiffusion(DDPM):
         return model
 
     def _get_denoise_row_from_list(self, samples, desc='', force_no_decoder_quantization=False):
-        print("get denoise row from list")
         denoise_row = []
         for zd in tqdm(samples, desc=desc):
             denoise_row.append(self.decode_first_stage(zd.to(self.device),
@@ -789,7 +770,6 @@ class LatentDiffusion(DDPM):
         return c
 
     def meshgrid(self, h, w):
-        print("meshgrid")
         y = torch.arange(0, h).view(h, 1, 1).repeat(1, w, 1)
         x = torch.arange(0, w).view(1, w, 1).repeat(h, 1, 1)
 
@@ -797,7 +777,6 @@ class LatentDiffusion(DDPM):
         return arr
 
     def delta_border(self, h, w):
-        print("delta border")
         """
         :param h: height
         :param w: width
@@ -812,7 +791,6 @@ class LatentDiffusion(DDPM):
         return edge_dist
 
     def get_weighting(self, h, w, Ly, Lx, device):
-        print("get weighting")
         weighting = self.delta_border(h, w)
         weighting = torch.clip(weighting, self.split_input_params["clip_min_weight"],
                                self.split_input_params["clip_max_weight"], )
@@ -833,7 +811,6 @@ class LatentDiffusion(DDPM):
         :param x: img of size (bs, c, h, w)
         :return: n img crops of size (n, bs, c, kernel_size[0], kernel_size[1])
         """
-        print("get fold unfold")
         bs, nc, h, w = x.shape
 
         # number of crops in image
@@ -981,20 +958,11 @@ class LatentDiffusion(DDPM):
 
             if not self.cond_stage_trainable or force_c_encode:
                 if isinstance(xc, dict) or isinstance(xc, list):
-                    # import pudb; pudb.set_trace()
-                    print("if runnin")
-                    # hspace error
-                    # c = self.get_learned_conditioning(xc, face_img=batch.get('image'),
-                    #                                   image_ori=batch.get('image_ori'),aligned_faces=batch.get('aligned_faces'))
+    
                     domain_text = [""]*x.shape[0]
                     c = self.get_learned_conditioning(domain_text)
-                    # # not sure why this is wrong
-                    # c = self.cond_stage_model.encode(domain_text, embedding_manager=self.embedding_manager,
-                    #                                         face_img=batch.get('image'), image_ori=batch.get('image_ori'),
-                    #                                         aligned_faces=batch.get('aligned_faces'),
-                    #                                         only_embedding=True)
+ 
                 else:
-                    print("else runnin")
                     c = self.get_learned_conditioning(xc.to(self.device), face_img=batch.get('image'),
                                                       image_ori=batch.get('image_ori'),aligned_faces=batch.get('aligned_faces'))
                 # raise ValueError('code should be updated')
@@ -1027,7 +995,6 @@ class LatentDiffusion(DDPM):
 
     @torch.no_grad()
     def decode_first_stage(self, z, predict_cids=False, force_not_quantize=False):
-        # print("decode first stage")
         if predict_cids:
             if z.dim() == 4:
                 z = torch.argmax(z.exp(), dim=1).long()
@@ -1088,7 +1055,6 @@ class LatentDiffusion(DDPM):
 
     # same as above but without decorator
     def differentiable_decode_first_stage(self, z, predict_cids=False, force_not_quantize=False):
-        print("differentiable decode first stage")
         if predict_cids:
             if z.dim() == 4:
                 z = torch.argmax(z.exp(), dim=1).long()
@@ -1224,7 +1190,6 @@ class LatentDiffusion(DDPM):
         return self.p_losses(x, c, t, noise, x_noisy, face_img, face_mask, *args, **kwargs)
 
     def _rescale_annotations(self, bboxes, crop_coordinates):  # TODO: move to dataset
-        print("rescale annotations")
         def rescale_bbox(bbox):
             x0 = clamp((bbox[0] - crop_coordinates[0]) / crop_coordinates[2])
             y0 = clamp((bbox[1] - crop_coordinates[1]) / crop_coordinates[3])
@@ -1297,19 +1262,14 @@ class LatentDiffusion(DDPM):
                 # tokenize crop coordinates for the bounding boxes of the respective patches
                 patch_limits_tknzd = [torch.LongTensor(self.bbox_tokenizer._crop_encoder(bbox))[None].to(self.device)
                                       for bbox in patch_limits]  # list of length l with tensors of shape (1, 2)
-                print(patch_limits_tknzd[0].shape)
                 # cut tknzd crop position from conditioning
                 assert isinstance(cond, dict), 'cond must be dict to be fed into model'
                 cut_cond = cond['c_crossattn'][0][..., :-2].to(self.device)
-                print(cut_cond.shape)
 
                 adapted_cond = torch.stack([torch.cat([cut_cond, p], dim=1) for p in patch_limits_tknzd])
                 adapted_cond = rearrange(adapted_cond, 'l b n -> (l b) n')
-                print(adapted_cond.shape)
                 adapted_cond = self.get_learned_conditioning(adapted_cond)
-                print(adapted_cond.shape)
                 adapted_cond = rearrange(adapted_cond, '(l b) n d -> l b n d', l=z.shape[-1])
-                print(adapted_cond.shape)
 
                 cond_list = [{'c_crossattn': [e]} for e in adapted_cond]
 
@@ -1337,7 +1297,6 @@ class LatentDiffusion(DDPM):
             return x_recon
 
     def _predict_eps_from_xstart(self, x_t, t, pred_xstart):
-        print("predict eps from xstart")
         return (extract_into_tensor(self.sqrt_recip_alphas_cumprod, t, x_t.shape) * x_t - pred_xstart) / \
                extract_into_tensor(self.sqrt_recipm1_alphas_cumprod, t, x_t.shape)
 
@@ -1349,7 +1308,6 @@ class LatentDiffusion(DDPM):
         :param x_start: the [N x C x ...] tensor of inputs.
         :return: a batch of [N] KL values (in bits), one per batch element.
         """
-        print("prior bpd")
         batch_size = x_start.shape[0]
         t = torch.tensor([self.num_timesteps - 1] * batch_size, device=x_start.device)
         qt_mean, _, qt_log_variance = self.q_mean_variance(x_start, t)
@@ -1357,17 +1315,10 @@ class LatentDiffusion(DDPM):
         return mean_flat(kl_prior) / np.log(2.0)
     
     def faceid_loss(self, x_noisy, x_start, t, model_output, face_img):
-        # print("faceid loss")
         # if model_output is None:
         #     model_output = self.apply_model(x_noisy, t, self.get_learned_conditioning([""]*x_noisy.shape[0]))
         x_recon = self.predict_start_from_noise(x_noisy, t=t, noise=model_output)
         x_recon = self.decode_first_stage(x_recon)
-
-        # # plotting images to check reconstructed image
-        # import matplotlib.pyplot as plt
-        # # plot face image and x_recon by concatenating them
-        # plt.imshow(np.concatenate((face_img[0].cpu().numpy(), x_recon[0].permute(1,2,0).cpu().numpy()), axis=1))
-        # plt.savefig("x_recon.png")
 
         id_loss, _ = self.id_loss(face_img.permute(0,3,1,2), x_recon)
         return id_loss
@@ -1454,7 +1405,6 @@ class LatentDiffusion(DDPM):
 
     def p_mean_variance(self, x, c, t, clip_denoised: bool, return_codebook_ids=False, quantize_denoised=False,
                         return_x0=False, score_corrector=None, corrector_kwargs=None):
-        print("p mean variance")
         t_in = t
         model_out = self.apply_model(x, t_in, c, return_ids=return_codebook_ids)
 
@@ -1488,7 +1438,6 @@ class LatentDiffusion(DDPM):
     def p_sample(self, x, c, t, clip_denoised=False, repeat_noise=False,
                  return_codebook_ids=False, quantize_denoised=False, return_x0=False,
                  temperature=1., noise_dropout=0., score_corrector=None, corrector_kwargs=None):
-        print("p sample")
         b, *_, device = *x.shape, x.device
         outputs = self.p_mean_variance(x=x, c=c, t=t, clip_denoised=clip_denoised,
                                        return_codebook_ids=return_codebook_ids,
@@ -1521,7 +1470,6 @@ class LatentDiffusion(DDPM):
                               img_callback=None, mask=None, x0=None, temperature=1., noise_dropout=0.,
                               score_corrector=None, corrector_kwargs=None, batch_size=None, x_T=None, start_T=None,
                               log_every_t=None):
-        print("progressive denoising")
         if not log_every_t:
             log_every_t = self.log_every_t
         timesteps = self.num_timesteps
@@ -1578,7 +1526,6 @@ class LatentDiffusion(DDPM):
                       x_T=None, verbose=True, callback=None, timesteps=None, quantize_denoised=False,
                       mask=None, x0=None, img_callback=None, start_T=None,
                       log_every_t=None):
-        print("p sample loop")
         if not log_every_t:
             log_every_t = self.log_every_t
         device = self.betas.device
@@ -1628,7 +1575,6 @@ class LatentDiffusion(DDPM):
     def sample(self, cond, batch_size=16, return_intermediates=False, x_T=None,
                verbose=True, timesteps=None, quantize_denoised=False,
                mask=None, x0=None, shape=None,**kwargs):
-        print("sample")
         if shape is None:
             shape = (batch_size, self.channels, self.image_size, self.image_size)
         if cond is not None:
@@ -1645,7 +1591,6 @@ class LatentDiffusion(DDPM):
 
     @torch.no_grad()
     def sample_log(self,cond,batch_size,ddim, ddim_steps,**kwargs):
-        print("sample log")
         if ddim:
             ddim_sampler = DDIMSampler(self)
             shape = (self.channels, self.image_size, self.image_size)
@@ -1662,17 +1607,6 @@ class LatentDiffusion(DDPM):
     def log_images(self, batch, N=8, n_row=4, sample=True, ddim_steps=50, ddim_eta=1., return_keys=None,
                    quantize_denoised=True, inpaint=False, plot_denoise_rows=False, plot_progressive_rows=False,
                    plot_diffusion_rows=False, **kwargs):
-        print("log images")
-
-        # print("self.model.conditioning_key", self.model.conditioning_key)
-        # print("self.cond_stage_key", self.cond_stage_key)
-        # print("plot_diffusion_rows", plot_diffusion_rows)
-        # print("sample", sample)
-        # print("plot_denoise_rows", plot_denoise_rows)
-        # print("quantize_denoised", quantize_denoised)
-        # print("plot_progressive_rows", plot_progressive_rows)
-        # print("inpaint", inpaint)
-        # print("return_keys", return_keys)
 
         image_for_ddim = {'face_img': batch['image'], 'image_ori': batch['image_ori'], 
                           'aligned_faces': batch['aligned_faces'],'caption': batch['caption']}
@@ -1798,7 +1732,6 @@ class LatentDiffusion(DDPM):
 
     def configure_optimizers(self):
         lr = self.learning_rate
-        print("configure optimizers")
 
         if self.embedding_manager is not None: # If using textual inversion
             embedding_params = list(self.embedding_manager.embedding_parameters())
@@ -1820,7 +1753,6 @@ class LatentDiffusion(DDPM):
                 print(f"{self.__class__.__name__}: Also optimizing conditioner params!")
                 params = params + list(self.cond_stage_model.parameters())
             if self.learn_logvar:
-                print('Diffusion model optimizing logvar')
                 params.append(self.logvar)
 
                 opt = torch.optim.AdamW(params, lr=lr)
@@ -1869,7 +1801,6 @@ class LatentDiffusion(DDPM):
 
     @torch.no_grad()
     def to_rgb(self, x):
-        print("to rgb")
         x = x.float()
         if not hasattr(self, "colorize"):
             self.colorize = torch.randn(3, x.shape[1], 1, 1).to(x)

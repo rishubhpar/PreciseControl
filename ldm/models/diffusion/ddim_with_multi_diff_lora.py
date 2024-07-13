@@ -12,8 +12,8 @@ from ldm.modules.diffusionmodules.util import make_ddim_sampling_parameters, mak
 
 from ldm.modules.prompt_mixing.attention_based_segmentation2 import Segmentor
 from ldm.modules.prompt_mixing.attention_utils import show_cross_attention, aggregate_attention, get_current_cross_attn
-from ldm.modules.prompt_mixing.prompt_to_prompt_controllers_astar import DummyController, AttentionStore
-from ldm.modules.prompt_mixing.prompt_to_prompt_controllers import AttentionStore as AttentionStore_wo_astar
+# from ldm.modules.prompt_mixing.prompt_to_prompt_controllers_astar import DummyController, AttentionStore
+from ldm.modules.prompt_mixing.prompt_to_prompt_controllers import AttentionStore ,DummyController
 
 from src.grounded_sam.grounded_sam_demo import main as get_sam_mask
 
@@ -73,7 +73,7 @@ def get_face_bounding_boxes(face_img):
         cv2.rectangle(face_img, (x,y), (x+w, y+h), color,1)
     plt.imshow(face_img[:,:,::-1])
     plt.savefig("./pz_bbox_on_face.png")
-    print("prediceted bounding boxes : ", bboxs)
+    # print("prediceted bounding boxes : ", bboxs)
     return bboxs, masks
 
 def assign_bbox_to_ids(model, model_config, args, **kwargs):
@@ -82,7 +82,6 @@ def assign_bbox_to_ids(model, model_config, args, **kwargs):
     ddim_sampler = DDIMSamplerWrapper(model=model, controller=controller, model_config=model_config)
     image, x_t, orig_all_latents, _ = ddim_sampler.sample(args, do_multi_diff=False, **kwargs)
     torchvision.utils.save_image(transforms.ToTensor()(image[0]), "./pmm_sample_img0.jpg")
-    print("image ", image.shape, np.max(image), np.min(image))
     bboxs, masks = get_face_bounding_boxes(image[0][:,:,::-1].astype(np.uint8))
     idx1 = kwargs["image_for_ddim"]["caption"][-1].split(" ").index("sks") + 2
     idx2 = kwargs["image_for_ddim"]["caption"][-1].split(" ").index("ks") + 1
@@ -117,7 +116,7 @@ def assign_bbox_to_ids(model, model_config, args, **kwargs):
     if(id1_iou1 > id1_iou2):
         final_mask = torch.cat([masks[0], masks[1], masks[2]], dim=0).numpy()
     else:
-        print("[mask swapped]")
+        # print("[mask swapped]")
         final_mask = torch.cat([masks[0], masks[2], masks[1]], dim=0).numpy()
     
     # final_maskA = torch.zeros_like(mask_A)
@@ -288,7 +287,6 @@ class DDIMSamplerWrapper(object):
             # img = torch.randn(shape, device=device)
             img = torch.randn((4,shape[1],shape[2],shape[3]), device=device)
             img = img[image_for_ddim["sample_id"]].unsqueeze(0)
-            print("initial img shape : ", img.shape)
             # if(orig_image_for_ddim is not None):
             #     img = torch.cat([img,img])
         else:
@@ -368,7 +366,7 @@ class DDIMSamplerWrapper(object):
             if(not do_multi_diff):
                 if(use_prompt_mixing and i < steps_for_prompt_mixing):
                     prompt_mixing_text = image_for_ddim['prompt_mixing_prompt']
-                    print("prompt mixing")
+                    # print("prompt mixing")
                     c = prompt_mixing_text
                     cond = self.model.get_learned_conditioning(c, face_img=face_img, image_ori=img_ori,aligned_faces=aligned_faces,h_space=h_space)
                     # getting other context
@@ -419,7 +417,7 @@ class DDIMSamplerWrapper(object):
 
                 if(use_prompt_mixing and i < steps_for_prompt_mixing):
                     prompt_mixing_text = image_for_ddim['prompt_mixing_prompt']
-                    print("prompt mixing")
+                    # print("prompt mixing")
                     c = prompt_mixing_text
                     cond = self.model.get_learned_conditioning(c, face_img=face_img, image_ori=img_ori,aligned_faces=aligned_faces,h_space=h_space)
 
@@ -645,7 +643,7 @@ class DDIMSamplerWrapper(object):
         cross_att_count = 0
         sub_nets = self.model.model.named_children().__iter__().__next__()[1].named_children()
         for net in sub_nets:
-            print(net[0])
+            # print(net[0])
             if "input" in net[0]:
                 cross_att_count += register_recr(net[1], 0, "input")
             elif "output" in net[0]:

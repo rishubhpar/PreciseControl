@@ -22,15 +22,15 @@
 <div class="is-size-5 publication-authors">
                   <span class="author-block">
                   <sup>1</sup> VAL IISc &nbsp;&nbsp;&nbsp;
-                  <sup>2</sup> IIT KGB &nbsp;&nbsp;&nbsp;
+                  <sup>2</sup> IIT Kharagpur &nbsp;&nbsp;&nbsp;
                 </div>
 <br>
 
 **TL;DR: Intergrating a unique individual into the pre-trained diffusion model with:** 
 
-✅ just <b>one</b> facial photograph &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+✅ just <b>one</b> facial photograph &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
 ✅ in <b>4</b> minutes tuning &nbsp;&nbsp;&nbsp;&nbsp;  
-✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;
+✅ Genearte and interact with other (new person) concepts &nbsp;&nbsp;&nbsp;&nbsp;  
 ✅ Do facial edits for generated images using our mapper network </br>
 
 ![Fig1](./assets/teaser-fig-precisecontrol.png)

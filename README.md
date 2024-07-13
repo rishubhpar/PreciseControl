@@ -56,20 +56,28 @@ More details can be found in our [project page](https://celeb-basis.github.io).
 ### Setup
 
 Our code mainly bases on [CelebBasis](https://github.com/ygtxr1997/CelebBasis).
-It also uses [Prompt-Mixing](https://github.com/orpatashnik/local-prompt-mixing), [Lora](https://github.com/cloneofsimo/lora) for lora finetuning and [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for mask generation.
+Additionally it uses the following repositories [Prompt-Mixing](https://github.com/orpatashnik/local-prompt-mixing) for delayed identity injection, [Lora](https://github.com/cloneofsimo/lora) for efficient finetuning and [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) to obtain initial layout for two-person generation.
 To set up our environment, please run:
 
 ```shell
 conda env create -f environment.yaml
 conda activate sd
 python -m pip install git+https://github.com/cloneofsimo/lora.git
-```
+```  
 
-And follow [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything) for setting up mask prediction in two person generation and download SAM weights in weights folder.
-The pre-trained weights used in this repo include [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1) and 
-[CosFace R100 trained on Glint360K](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo).
+### Pretrained weights:
+- [GroundedSAM](https://github.com/IDEA-Research/Grounded-Segment-Anything)  
+- [Stable Diffusion 2.1](https://huggingface.co/stabilityai/stable-diffusion-2-1)   
+- [CosFace R100](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch#model-zoo) for face computing Identity Loss
+- [Encoder4Editing (E4E)](https://github.com/omertov/encoder4editing?tab=readme-ov-file).
+Copy the pretrained weights to './weights' folder, the directory structure is shown below: 
+
+<!-- Old version commented out 
+The pre-trained weights used in this repo include [Stable Diffusion 2.1] and 
+[CosFace R100 trained on Glint360K]. 
 And download FFHQ e4e weights and IR-SE50 weights from [encoder4editing](https://github.com/omertov/encoder4editing?tab=readme-ov-file). 
 You may copy these pre-trained weights to `./weights`, and the directory tree will be like:
+ -->
 
 ```shell
 PreciseControl/

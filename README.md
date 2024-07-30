@@ -1,6 +1,5 @@
 # Inserting Anybody in Diffusion Models via Celeb Basis
 
-<a href='https://arxiv.org/abs/2306.00926'><img src='https://img.shields.io/badge/ArXiv-PDF-red'></a> &nbsp; 
 <a href='https://celeb-basis.github.io'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; 
 
 
@@ -227,10 +226,10 @@ The extracted coefficients or embeddings are under `./weights/ti_id_embeddings/`
 ### BibTex
 
 ```tex
-@article{yuan2023celebbasis,
-  title={Inserting Anybody in Diffusion Models via Celeb Basis},
-  author={Yuan, Ge and Cun, Xiaodong and Zhang, Yong and Li, Maomao and Qi, Chenyang and Wang, Xintao and Shan, Ying and Zheng, Huicheng},
-  journal={arXiv preprint arXiv:2306.00926},
-  year={2023}
+@misc{rishubh2024precisecontrol,
+      title={PreciseControl : Enhancing Text-to-Image Diffusion Models with Fine-Grained Attribute Control},
+      author={Rishubh Parihar, Sachidanand VS, Sabariswaran Mani, Tejan Karmali, R. Venkatesh Babu},
+      booktitle={Proceedings of the European Conference on Computer Vision (ECCV)},
+      year={2024},
 }
 ```

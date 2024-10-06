@@ -1,6 +1,6 @@
-# Inserting Anybody in Diffusion Models via Celeb Basis
+# PreciseControl : Enhancing Text-to-Image Diffusion Models with Fine-Grained Attribute Control
 
-<a href='https://celeb-basis.github.io'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; 
+<a href='[https://celeb-basis.github.io](https://rishubhpar.github.io/PreciseControl.home/)'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; 
 
 
 <div>

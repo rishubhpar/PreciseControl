@@ -1,6 +1,7 @@
 # PreciseControl : Enhancing Text-to-Image Diffusion Models with Fine-Grained Attribute Control
 
-<a href='[https://rishubhpar.github.io/PreciseControl.home/]'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; 
+<a href='https://arxiv.org/abs/2408.05083'><img src='https://img.shields.io/badge/ArXiv-PDF-red'></a> &nbsp; 
+<a href='https://rishubhpar.github.io/PreciseControl.home/'><img src='https://img.shields.io/badge/Project-Page-Green'></a> &nbsp; 
 
 
 <div>
